@@ -154,16 +154,16 @@ class Box(Volume):
         s = self.parameters['position'][0]
         if(type(s) is not str):
             s = str(s)+self.units
-        text += '"XCenter:=", "%s", '%s
+        text += '"XPosition:=", "%s", '%s
         s = self.parameters['position'][1]
         if(type(s) is not str):
             s = str(s)+self.units
-        text += '"YCenter:=",  _\n\
+        text += '"YPosition:=",  _\n\
   "%s", '%s
         s = self.parameters['position'][2]
         if(type(s) is not str):
             s = str(s)+self.units
-        text += '"ZCenter:=", "%s", '%s
+        text += '"ZPosition:=", "%s", '%s
 
         s = self.parameters['size'][0]
         if(type(s) is not str):
