@@ -45,6 +45,7 @@ Set oDesktop = oAnsoftApp.GetAppDesktop()\n\
 oDesktop.RestoreWindow\n\
 Set oProject = oDesktop.SetActiveProject("%s")\n\
 Set oDesign = oProject.SetActiveDesign("HFSSDesign1")\n\
+Set oModule = oDesign.GetModule("BoundarySetup")\n\
 Set oEditor = oDesign.SetActiveEditor("3D Modeler")\n'%self.name
         for action in self.actions:
             text += action.hfss_implementation(self.model_params)

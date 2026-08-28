@@ -1,6 +1,7 @@
 from model import *
 from volumes import *
 from actions import *
+from surfaces import *
 
 
 model = hfss_vbs_model("test")
@@ -25,10 +26,25 @@ model.add_action(upper_wire)
 model.add_action(bottom_wire)
 
 
-box_text = Box("Box_wn", 10,20,30)
-box_text.set_position(offset_x = 30, offset_y=20)
+box_test = Box("Box_wn", 10,20,30, transparency=100)
+box_test.set_position(offset_x = 30, offset_y=20)
 
-model.add_action(box_text)
+model.add_action(box_test)
+
+rect1 = Rectangle("Rect1", width = 10, height=5, axis="X")
+model.add_action(rect1)
+
+##far field boundary
+rad = Set_radiation_boundary(box_test)
+model.add_action(rad)
+
+##lumped port
+## we will assign it to the rectange, this should be between [0,0,0,], [0,0,5], [0,10,5], [0,10,0] (it does live in the X plane)
+field_dir = [[0,0, 2.5], [0,10,2.5]]
+
+l_port0 = Set_lumped_port(rect1, field_dir)
+model.add_action(l_port0)
+
 
 
 

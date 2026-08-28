@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from PIL import ImageColor
 import copy
+import ipdb
 
 
 """
@@ -8,7 +9,8 @@ import copy
 
 class Volume(ABC):
 
-    def __init__(self, name, material='vacuum', color='steelblue', units='mm', axis="Z", solve_inside=True):
+    def __init__(self, name, material='vacuum', color='steelblue', units='mm', 
+                 axis="Z", solve_inside=True, transparency=0):
         self.name = name
         self.material = material
         self.axis = axis
@@ -20,6 +22,9 @@ class Volume(ABC):
         self.parameters = { "position": position,
                             "rotation": rotation,
                             }
+        self.transparency = transparency
+
+
     def set_rotation(self,ang_x=0, ang_y=0, ang_z=0):
         rotation = [0]*3
         rotation[0] = ang_x
@@ -38,7 +43,7 @@ class Volume(ABC):
     def change_axis(self, new_axis):
         if(not(new_axis.upper() in ["X", "Y", "Z"])):
             raise ValueError("Set axis on Valume %s dont make sense %s"%(self.name, new_axis))
-        self.axis = new_axis
+        self.axis = new_axis.upper()
 
     ##these are more complicated...
     @staticmethod
@@ -80,12 +85,13 @@ class Cylinder(Volume):
                  material="vacuum", color="steelblue"):
 
         super().__init__(name, material, color, units, axis) 
+        self.set_position(offset_x=position[0], offset_y=position[1], offset_z=position[2])
         self.parameters['radius'] = radius
         self.parameters['height'] = height
 
     def hfss_implementation(self, model_params):
         self._check_variables(self, model_params)
-        text = 'oEditor.CreateCylinder Array("NAME:CylinderParameters",'
+        text = '\noEditor.CreateCylinder Array("NAME:CylinderParameters",'
         s = self.parameters['position'][0]
         if(type(s) is not str):
             s = str(s)+self.units
@@ -116,8 +122,8 @@ class Cylinder(Volume):
         text+= '"Flags:=", "",'
         color = ImageColor.getrgb(self.color)
         text+='"Color:=", "(%i %i %i)",'%(color[0], color[1], color[2])
-        text+= '"Transparency:=", 0, "PartCoordinateSystem:=",  _\n\
-  "Global", "UDMId:=", "",'
+        text+= '"Transparency:=", %i, "PartCoordinateSystem:=",  _\n\
+  "Global", "UDMId:=", "",'%self.transparency
         text+= '"MaterialValue:=", "" & Chr(34) & "%s" & Chr(34) & "",'%self.material
         text += '"SolveInside:=",  _\n\
   %s)\n'%(str(self.solve_inside).lower())
@@ -136,13 +142,15 @@ class Box(Volume):
 
     def __init__(self, name, x_size, y_size, z_size, position=[0,0,0], 
                  units="mm",rotation=[0,0,0], axis="Z",
-                 material="vacuum", color="steelblue"):
-        super().__init__(name, material, color, units, axis) 
+                 material="vacuum", color="steelblue", solve_inside=True, transparency=0):
+        super().__init__(name, material, color, units, axis, 
+                         solve_inside=solve_inside,transparency=transparency) 
+        self.set_position(offset_x=position[0], offset_y=position[1], offset_z=position[2])
         self.parameters['size'] = [x_size, y_size, z_size]
         
     def hfss_implementation(self, model_params):
         self._check_variables(self, model_params)
-        text = 'oEditor.CreateBox Array("NAME:BoxParameters",'
+        text = '\noEditor.CreateBox Array("NAME:BoxParameters",'
         s = self.parameters['position'][0]
         if(type(s) is not str):
             s = str(s)+self.units
@@ -176,8 +184,8 @@ class Box(Volume):
         color = ImageColor.getrgb(self.color)
         text += ' "Color:=",  _\n\
   "(%i %i %i)",'%(color[0], color[1], color[2])
-        text += ' "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _\n\
-  "",'
+        text += ' "Transparency:=", %i, "PartCoordinateSystem:=", "Global", "UDMId:=",  _\n\
+  "",'%self.solve_inside
         text += '"MaterialValue:=", "" & Chr(34) & "%s" & Chr(34) & "",'%self.material
         text += ' "SolveInside:=",  _\n\
   %s)\n'%(str(self.solve_inside).lower())
