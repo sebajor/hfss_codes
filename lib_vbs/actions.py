@@ -92,9 +92,9 @@ class Unite_objects(Action):
         self.obj2_name = obj2.name 
 
     def hfss_implementation(self, model_params):
-        text = 'oEditor.Unite Array("NAME:Selections", "Selections:=", "%s,%s"),\
+        text = '\noEditor.Unite Array("NAME:Selections", "Selections:=", "%s,%s"),\
 Array("NAME:UniteParameters", "KeepOriginals:=",  _\n\
-false)'%(self.ob1_name, self.obj2_name)
+false)\n'%(self.obj1_name, self.obj2_name)
         return text
 
     def plot(self, model_params):
@@ -108,11 +108,11 @@ class Substract_objects(Action):
     def __init__(self, obj1, obj2, keep_obj2=False):
         self.obj1_name = obj1.name 
         self.obj2_name = obj2.name
-        self.keep_obj2 = "true" if keep_obj2 else "false"
+        self.keep_obj2 = keep_obj2
 
     def hfss_implementation(self, model_params):
-        text = 'oEditor.Subtract Array("NAME:Selections", "Blank Parts:=", "%s", "Tool Parts:=",  _\n\
-"%s"), Array("NAME:SubtractParameters", "KeepOriginals:=", %s)'%(self.obj1, self.obj2, self.keep_obj2)
+        text = '\noEditor.Subtract Array("NAME:Selections", "Blank Parts:=", "%s", "Tool Parts:=",  _\n\
+"%s"), Array("NAME:SubtractParameters", "KeepOriginals:=", %s)\n'%(self.obj1_name, self.obj2_name, str(self.keep_obj2).lower())
         return text
 
     def plot(self, model_params):

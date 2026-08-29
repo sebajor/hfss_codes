@@ -77,6 +77,9 @@ class Surface(ABC):
 
 
 class Rectangle(Surface):
+    """
+    The axis is orthogonal to where the rectangle lives!
+    """
 
 
     def __init__(self, name, width, height, position=[0,0,0], 
