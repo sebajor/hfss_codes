@@ -82,9 +82,10 @@ class Cylinder(Volume):
 
     def __init__(self, name, radius, height, position=[0,0,0], 
                  units="mm",rotation=[0,0,0], axis="Z",
-                 material="vacuum", color="steelblue"):
+                 material="vacuum", color="steelblue",
+                 solve_inside = True):
 
-        super().__init__(name, material, color, units, axis) 
+        super().__init__(name, material, color, units, axis, solve_inside=solve_inside) 
         self.set_position(offset_x=position[0], offset_y=position[1], offset_z=position[2])
         self.parameters['radius'] = radius
         self.parameters['height'] = height
@@ -194,4 +195,53 @@ class Box(Volume):
     def plot(self, model_params):
         return 
 
+
+
+
+class Sphere(Volume):
+
+    def __init__(self, name, position, radius, material='vaccum', 
+                 units='mm', color='steelblue', transparency=0,
+                 solve_inside=True):
+        
+        super().__init__(name, material, color, units, 
+                         solve_inside=solve_inside,transparency=transparency) 
+        self.set_position(offset_x=position[0], offset_y=position[1], offset_z=position[2])
+        self.parametres['radius'] = radius
+
+    
+    def hfss_implementation(self, model_params):
+        self._check_variables(self, model_params)
+
+        text = 'oEditor.CreateSphere Array("NAME:SphereParameters",'
+        s = self.parameters['position'][0]
+        if(type(s) is not str):
+            s = str(s)+self.units
+        text += '"XCenter:=", "%s",'%s
+        s = self.parameters['position'][1]
+        if(type(s) is not str):
+            s = str(s)+self.units
+        text += '"YCenter:=", "%s",\n' %s
+        s = self.parameters['position'][2]
+        if(type(s) is not str):
+            s = str(s)+self.units
+        text += '"ZCenter:=", "%s",'%s
+        
+        s = self.parameters['radius']
+        if(type(s) is not str):
+            s = str(s)+self.units
+        text += '"Radius:=", "%s"),'%s
+
+        text += 'Array("NAME:Attributes", "Name:=",  _\n\
+"%s",'%self.name 
+        text += '"Flags:=", "", '
+
+        color = ImageColor.getrgb(self.color)
+        text += ' "Color:=", "(%i %i %i)",'%(color[0], color[1], color[2])
+
+        text +=  '"Transparency:=", %i, "PartCoordinateSystem:=",  _\n\
+"Global", "UDMId:=", "",'%transparency
+        text += '"MaterialValue:=", "" & Chr(34) & "%s" & Chr(34) & "",'%self.amterial
+        text += '"SolveInside:=",  %s)'%(str(self.solve_inside).lower())
+        return text
 

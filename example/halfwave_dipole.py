@@ -14,6 +14,8 @@ from astropy import units as apu
 freq = 2.4*apu.GHz
 wavel = cte.c/freq
 
+output_filename = "vbs_files/halfwave_dipole.vbs"
+
 ##values used for the hyperparameters
 dipole_height_value = (wavel).to_value(apu.mm)/2
 dipole_gap_value = (wavel).to_value(apu.mm)/100
@@ -32,11 +34,13 @@ model.add_action(dipole_gap)
 model.add_action(wire_radius)
 
 ###create cylinders
-upper_wire = Cylinder(name='upper_wire', radius='wire_radius', height='dipole_height/2-dipole_gap/2')
+upper_wire = Cylinder(name='upper_wire', radius='wire_radius', height='dipole_height/2-dipole_gap/2', 
+                      material='pec', solve_inside=False)
 upper_wire.set_position(offset_z="dipole_gap/2")
 
 
-bottom_wire = Cylinder(name='bottom_wire', radius='wire_radius', height='-dipole_height/2+dipole_gap/2')
+bottom_wire = Cylinder(name='bottom_wire', radius='wire_radius', height='-dipole_height/2+dipole_gap/2', 
+                       material='pec', solve_inside=False)
 bottom_wire.set_position(offset_z="-dipole_gap/2")
 
 model.add_action(upper_wire)
@@ -59,15 +63,10 @@ lump_port = Set_lumped_port(rect_port, field_dir)
 model.add_action(lump_port)
 
 ## create radiation box
-rad_rule = wavel.to_value(apu.mm)/4
-#rad_width_value = "dipole_height+2*wire_radius"
-#rad_height_value = "dipole_height+2*dipole_height"
+rad_rule = wavel.to_value(apu.mm)/4     ##rule of thumbs
 
 rad_width = str(2*rad_rule)+"mm"+"+2*wire_radius"
 rad_height = str(2*rad_rule)+"mm"+"+dipole_height"
-#we will create a model parameter for this
-
-
 
 rad_box = Box("rad_box", rad_width, rad_width, rad_height, transparency=90,
             position=[
@@ -77,17 +76,19 @@ rad_box = Box("rad_box", rad_width, rad_width, rad_height, transparency=90,
                 ]
 
               )
-#rad_box.set_position(offset_x="2*wire_radius",
-#                     offset_y="2*wire_radius",
-#                     offset_z="2*wire_radius")
-
 model.add_action(rad_box)
 
 rad = Set_radiation_boundary(rad_box)
 model.add_action(rad)
 
 
+###generate analysis and fsweep
 
+sol = Create_analysis("sol", freq.to_value(apu.GHz), units="GHz")
+fsweep = Add_fsweep(sol.name, 1.5, 3.5, 0.1, units="GHz")
+
+model.add_action(sol)
+model.add_action(fsweep)
 
 
 ###
@@ -96,7 +97,7 @@ model.add_action(rad)
 
 text = model.hfss_implementation()
 
-f = open("output.vbs", "w")
+f = open(output_filename, "w")
 f.write(text)
 f.close()
 
