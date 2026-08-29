@@ -144,7 +144,7 @@ false, "UseAdaptiveIE:=", false, "IncludeInPostproc:=", true)\n'%self.obj_name
 
 class Set_lumped_port(Action):
 
-    def __init__(self, surface, field_mode, units='mm', mode_num=1, resistance=50, reactance=0):
+    def __init__(self, name, surface, field_mode, units='mm', mode_num=1, resistance=50, reactance=0):
         """
         
         The field mode should is a list with two 3D points, creating a line that
@@ -152,6 +152,7 @@ class Set_lumped_port(Action):
         TODO: Check that the input parameters gives a valid object!!!
         
         """
+        self.name = name
         self.surface_name = surface.name
         self.field_mode = field_mode
         self.mode_num = mode_num
@@ -161,7 +162,7 @@ class Set_lumped_port(Action):
 
     def hfss_implementation(self, model_params):
         text = '\nSet oModule = oDesign.GetModule("BoundarySetup")\n'
-        text +='\noModule.AssignLumpedPort Array("NAME:1", "Objects:=", Array("%s"),'%self.surface_name
+        text +='\noModule.AssignLumpedPort Array("NAME:%s", "Objects:=", Array("%s"),'%(self.name, self.surface_name)
         text += '"RenormalizeAllTerminals:=",  _\n\
   true, "DoDeembed:=", false,'
         text += ' Array("NAME:Modes", Array("NAME:Mode1", "ModeNum:=", %i, "UseIntLine:=",  _\n\

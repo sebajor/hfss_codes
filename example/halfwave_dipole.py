@@ -58,7 +58,7 @@ rect_port.set_position(offset_x="-wire_radius", offset_z="-dipole_gap/2")
 model.add_action(rect_port)
 
 field_dir = [[0,0,-dipole_gap.value/2], [0,0,dipole_gap.value/2]]
-lump_port = Set_lumped_port(rect_port, field_dir)
+lump_port = Set_lumped_port("1",rect_port, field_dir)
 
 model.add_action(lump_port)
 
