@@ -34,7 +34,7 @@ class Add_model_parameter(Action):
         return
 
 
-class Rotate_obj(Action):
+class Rotate_object(Action):
     ##TODO: There is no track on the new positions at all after this!
     ##at this stage only hfss will know where the obj is
     ##Be carefull bcs here the order of the operations matters
@@ -42,12 +42,15 @@ class Rotate_obj(Action):
         """
         angle in deg
         """
-        self.axis = axis.upper()
-        self.angle = str(ang)+"deg"
         self.obj_name = obj.name
+        self.axis = axis.upper()
+        if(type(angle) is str):
+            self.angle = angle
+        else:
+            self.angle = str(angle)+"deg"
 
     def hfss_implementation(self, model_params):
-        text = 'Editor.Rotate Array("NAME:Selections", "Selections:=", "%s", "NewPartsModelFlag:=",  _\n\
+        text = '\noEditor.Rotate Array("NAME:Selections", "Selections:=", "%s", "NewPartsModelFlag:=",  _\n\
 "Model"), Array("NAME:RotateParameters", "RotateAxis:=", "%s", "RotateAngle:=",  _\n\
 "%s")\n'%(self.obj_name, self.axis, self.angle)
         return text
@@ -55,7 +58,7 @@ class Rotate_obj(Action):
     def plot(self, model_params):
         return None
 
-class Move_obj(Action):
+class Move_object(Action):
     ##TODO: how to keep track of this outside hfss!
     def __init__(self, obj, x=0, y=0, z=0, units='mm'):
         self.obj_name = obj.name
@@ -63,7 +66,7 @@ class Move_obj(Action):
         self.units = units
 
     def hfss_implementation(self, model_params):
-        text = 'oEditor.Move Array("NAME:Selections", "Selections:=", "%s", "NewPartsModelFlag:=",  _\n\
+        text = '\noEditor.Move Array("NAME:Selections", "Selections:=", "%s", "NewPartsModelFlag:=",  _\n\
 "Model"),'%self.obj_name
         s = self.offsets[0]
         if(type(s) is not str):
@@ -74,10 +77,10 @@ class Move_obj(Action):
             s = str(s)+self.units
         text += '"TranslateVectorY:=",  _\n\
 "%s",'%s
-        s = self.offsets[1]
+        s = self.offsets[2]
         if(type(s) is not str):
             s = str(s)+self.units
-        text += '"TranslateVectorZ:=", "%s")'%s
+        text += '"TranslateVectorZ:=", "%s")\n'%s
         return text
 
     def plot(self, model_params):
