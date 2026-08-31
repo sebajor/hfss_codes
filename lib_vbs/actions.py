@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from PIL import ImageColor
 
 
 class Action(ABC):
@@ -120,6 +121,90 @@ class Substract_objects(Action):
 
     def plot(self, model_params):
         return 
+
+
+class Connect_objects(Action):
+    """
+    Note: the resulting objname is the one of obj1
+    """
+    def __init__(self, obj1, obj2):
+        self.obj1_name = obj1.name
+        self.obj2_name = obj2.name
+
+    def hfss_implementation(self, model_params):
+        text = '\noEditor.Connect Array("NAME:Selections", "Selections:=",  _\n\
+"%s,%s")'%(self.obj1_name, self.obj2_name)
+        return text
+    
+    def plot(self, model_params):
+        return
+
+
+class Generate_revolution_solid(Action):
+    """
+    Angle in deg!
+    """
+    def __init__(self, obj ,segments=0, axis="Z", angle=360):
+        self.obj_name = obj.name
+        self.segments = str(segments)
+        self.axis = axis.upper()
+        self.angle = str(angle)
+
+    def hfss_implementation(self, model_params):
+        text = '\noEditor.SweepAroundAxis Array("NAME:Selections",'
+        text += '"Selections:=", "%s",'%self.obj_name
+        text += '"NewPartsModelFlag:=",  _\n\
+"Model"), Array("NAME:AxisSweepParameters", "DraftAngle:=", "0deg", "DraftType:=",  _\n\
+"Round","CheckFaceFaceIntersection:=", false,'
+        text += '"SweepAxis:=", "%s",'%self.axis
+        text += '"SweepAngle:=",  _\n\
+"%sdeg",'%self.angle
+        text += '"NumOfSegments:=", "%s")\n'%self.segments
+        return text
+
+    def plot(self, model_params):
+        return 
+
+
+
+##Change objects parameters
+
+class Change_object_color(Action):
+    def __init__(self, obj, new_color):
+        self.obj_name = obj.name
+        if(type(new_color) is str):
+            self.new_color = ImageColor.getrgb(new_color)
+        else:
+            self.new_color = new_color
+
+    def hfss_implementation(self, model_params):
+        text = '\noEditor.ChangeProperty Array("NAME:AllTabs", Array("NAME:Geometry3DAttributeTab", Array("NAME:PropServers",  _\n\
+"%s"), Array("NAME:ChangedProps", Array("NAME:Color", "R:=", %i, "G:=", %i, "B:=",  _\n\
+%i))))\n'%(self.obj_name, self.new_color[0], self.new_color[1], self.new_color[2])
+        return text
+
+    def plot(self, model_params):
+        return 
+
+
+class Change_object_material(Action):
+    def __init__(self, obj, material):
+        self.obj_name = obj.name
+        self.material = material
+
+    def hfss_implementation(self, model_params):
+        text = '\noEditor.ChangeProperty Array("NAME:AllTabs", Array("NAME:Geometry3DAttributeTab", Array("NAME:PropServers",  _\n\
+"%s"),'%self.obj_name
+        text += 'Array("NAME:ChangedProps", Array("NAME:Material", "Value:=", "" & Chr(34) & "%s" & Chr(34) & ""))))\n'%self.material
+        return text
+
+    def plot(self, model_params):
+        return 
+
+
+
+
+
 
 ###
 ### Boundaries
