@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from parameters import Expression
+
+
 
 class Lines(ABC):
 
@@ -9,28 +10,15 @@ class Lines(ABC):
         self.units = units
 
     @abstractmethod
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         raise NotImplementedError
 
-    def plot(self):
+    def plot(self, model_params):
         raise NotImplementedError
 
-    def _hfss_value(self, value, units=None):
-        """
-        """
-        if isinstance(value, Expression):
-            return value.name
-
-        if units is None:
-            units = self.units
-
-        return f"{value}{units}"
-
-
 ###
-### Children
+### Childrens
 ###
-
 
 class Equation_curve(Lines):
     """
@@ -55,7 +43,7 @@ class Equation_curve(Lines):
         self.pts = str(points)
 
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         text = '\noEditor.CreateEquationCurve Array("NAME:EquationBasedCurveParameters",'
         text += '"XtFunction:=",  _\n\
 "(%s)*1%s",'%(self.x_function, self.units)
@@ -74,7 +62,7 @@ class Equation_curve(Lines):
 true)\n'%(self.name)
         return text
 
-    def plot(self):
+    def plot(self,model_params):
         return 
 
 
@@ -90,4 +78,3 @@ class Polycurve(Lines):
 
     def plot(self, model_params):
         return 
-

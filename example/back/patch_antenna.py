@@ -1,6 +1,5 @@
 import sys
 sys.path.append("../lib_vbs")
-from parameters import *
 from model import *
 from surfaces import *
 from actions import *
@@ -50,6 +49,10 @@ feed_cut_x= Add_model_parameter("feed_cut_x", value=feed_cut_x_value, unit='mm')
 feed_cut_y= Add_model_parameter("feed_cut_y", value=feed_cut_y_value, unit='mm')
 
 
+
+
+dielectric_material = "FR4_epoxy"
+
 model.add_action(dielectric_height)
 model.add_action(dielectric_size)
 model.add_action(copper_height)
@@ -61,30 +64,30 @@ model.add_action(feed_cut_x)
 
 
 ###create ground plane I place it at -line_height, then the substrate sits at z=0
-gnd = Box('ground_plane', dielectric_size, dielectric_size, copper_height, 
-          position=[-dielectric_size/2,-dielectric_size/2,-copper_height],
+gnd = Box('ground_plane', "dielectric_size", "dielectric_size", "copper_height", 
+          position=["-dielectric_size/2","-dielectric_size/2","-copper_height"],
           material='pec', solve_inside=False, color='orange')
 
 model.add_action(gnd)
 
 ###create dielectric
-dielec = Box("diel", dielectric_size, dielectric_size, dielectric_height,
-             position=[-dielectric_size/2, -dielectric_size/2,0],
+dielec = Box("diel", "dielectric_size", "dielectric_size", "dielectric_height",
+             position=["-dielectric_size/2", "-dielectric_size/2",0],
              material=dielectric_material, transparency=0)
 
 model.add_action(dielec)
 
 ###add the patch at the center
-patch = Box('patch', patch_width, patch_length, copper_height,
-            position=[-patch_width/2, -patch_length/2, dielectric_height],
+patch = Box('patch', "patch_width", "patch_length", "copper_height",
+            position=["-patch_width/2", "-patch_length/2", "dielectric_height"],
             material="pec", solve_inside=False, color='orange'
             )
 model.add_action(patch)
 
 
 ###add the feed.. here we just let the boxes to collide
-feedline = Box("feedline", -dielectric_size/2, feedline_width, copper_height,
-                position=[dielectric_size/2, -feedline_width/2, dielectric_height],
+feedline = Box("feedline", "-dielectric_size/2", "feedline_width", "copper_height",
+                position=["dielectric_size/2", "-feedline_width/2", "dielectric_height"],
                 material="pec", solve_inside=False, color='orange')
 
 model.add_action(feedline)
@@ -92,8 +95,8 @@ model.add_action(feedline)
 ###The feedline is 50ohm at 2.4, but the patch is 250 so to match the port she wants 
 ## to cut a rectangle from the patch in the insertion of the feedline
 
-feed_cut = Box("feed_cut", -feed_cut_x, feed_cut_y, copper_height,
-               position=[ patch_width/2, -feed_cut_y/2 , dielectric_height],
+feed_cut = Box("feed_cut", "-feed_cut_x", "feed_cut_y", "copper_height",
+               position=[ "patch_width/2", "-feed_cut_y/2" , "dielectric_height"],
                material="pec", solve_inside=False, color='red')
 
 model.add_action(feed_cut)
@@ -108,34 +111,34 @@ model.add_action(compose_patch)
 
 
 ##create lumped port, width=y, length=z
-rect1 = Rectangle(name='rect1', height=2*copper_height+dielectric_height,
-                  width=feedline_width,
+rect1 = Rectangle(name='rect1', height="2*copper_height+dielectric_height",
+                  width="feedline_width",
                   axis="X", transparency=0)
 
-rect1.set_position(offset_x=dielectric_size/2,
-                   offset_y=-feedline_width/2,
-                   offset_z=-copper_height)
+rect1.set_position(offset_x="dielectric_size/2",
+                   offset_y="-feedline_width/2",
+                   offset_z="-copper_height")
 model.add_action(rect1)
 
 ##create exitation
-field_dir = [[(dielectric_size/2).value, 0, -copper_height.value],
-             [(dielectric_size/2).value, 0, (dielectric_height+copper_height).value]]
+field_dir = [[dielectric_size_value/2, 0, -copper_height_value],
+             [dielectric_size_value/2, 0, dielectric_height_value+copper_height_value]]
 
 lump_port1 = Set_lumped_port("1",rect1, field_dir)
 model.add_action(lump_port1) 
 
 ##create radiation box
 
-thumb_rule = wavel.to_value(apu.m)/4
+thumb_rule = wavel.to_value(apu.mm)/4
 
-rad_width =  dielectric_size+3*thumb_rule
-rad_height = 2*copper_height+dielectric_height+2*thumb_rule
+rad_width =  "dielectric_size+3*("+str(thumb_rule)+"mm)"
+rad_height = "2*copper_height+dielectric_height+2*("+str(thumb_rule)+"mm)"
 
 rad_box = Box("rad_box", rad_width, rad_width, rad_height, transparency=90,
             position=[
-                    -rad_width/2,
-                    -rad_width/2,
-                    -rad_height/2
+                    "-("+rad_width+")/2",
+                    "-("+rad_width+")/2",
+                    "-("+rad_height+")/2"
                 ]
               )
 
@@ -164,5 +167,6 @@ text = model.hfss_implementation()
 f = open(output_filename, "w")
 f.write(text)
 f.close()
+
 
 

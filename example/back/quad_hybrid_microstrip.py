@@ -1,6 +1,5 @@
 import sys
 sys.path.append("../lib_vbs")
-from parameters import *
 from model import *
 from surfaces import *
 from actions import *
@@ -74,19 +73,19 @@ model.add_action(substrate_gap)
 
 ##ground plane
 #dielectric_width = "length35+2*width50+2*feedline_length"
-dielectric_width = length35+2*(feedline_length-width50)
-dielectric_length = length50+2*width35+2*substrate_gap
+dielectric_width = "length35+2*(feedline_length-width50)"
+dielectric_length = "length50+2*width35+2*substrate_gap"
 
-gnd = Box('ground_plane',dielectric_width, dielectric_length, copper_height, 
-          position=[-(dielectric_width)/2,-(dielectric_length)/2,-copper_height],
+gnd = Box('ground_plane',dielectric_width, dielectric_length, "copper_height", 
+          position=["-("+dielectric_width+")/2","-("+dielectric_length+")/2","-copper_height"],
           material='pec', solve_inside=False, color='orange')
 
 model.add_action(gnd)
 
 
 ##substrate
-diel = Box('diel',dielectric_width, dielectric_length, dielectric_height, 
-          position=[-(dielectric_width)/2,-(dielectric_length)/2,0],
+diel = Box('diel',dielectric_width, dielectric_length, "dielectric_height", 
+          position=["-("+dielectric_width+")/2","-("+dielectric_length+")/2",0],
           material=dielectric_material)
 
 model.add_action(diel)
@@ -98,13 +97,13 @@ model.add_action(diel)
 
 
 ##35 ohm lines
-line1 = Box("line1", length35, width35, copper_height, 
-            position=[-length35/2, length50/2-width50, dielectric_height],
+line1 = Box("line1", "length35", "width35", "copper_height", 
+            position=["-length35/2", "length50/2-width50", "dielectric_height"],
             material="pec", solve_inside=False, color='orange')
 
 
-line2 = Box("line2", length35, -width35, copper_height, 
-            position=[-length35/2, -length50/2+width50, dielectric_height],
+line2 = Box("line2", "length35", "-width35", "copper_height", 
+            position=["-length35/2", "-length50/2+width50", "dielectric_height"],
             material="pec", solve_inside=False, color='orange')
 
 
@@ -112,13 +111,13 @@ model.add_action(line1)
 model.add_action(line2)
 
 ##50 ohm lines
-line3 = Box("line3", width50, length50, copper_height, 
-            position=[-length35/2, -length50/2, dielectric_height],
+line3 = Box("line3", "width50", "length50", "copper_height", 
+            position=["-length35/2", "-length50/2", "dielectric_height"],
             material="pec", solve_inside=False, color='orange')
 
 
-line4 = Box("line4", -width50, length50, copper_height, 
-            position=[length35/2, -length50/2, dielectric_height],
+line4 = Box("line4", "-width50", "length50", "copper_height", 
+            position=["length35/2", "-length50/2", "dielectric_height"],
             material="pec", solve_inside=False, color='orange')
 
 model.add_action(line3)
@@ -127,23 +126,23 @@ model.add_action(line4)
 ##feed lines
 
 
-feed1= Box("feed1", -feedline_length, -width50, copper_height, 
-            position=[-length35/2+width50, length50/2, dielectric_height],
+feed1= Box("feed1", "-feedline_length", "-width50", "copper_height", 
+            position=["-length35/2+width50", "length50/2", "dielectric_height"],
             material="pec", solve_inside=False, color='orange')
 
 
-feed2= Box("feed2", -feedline_length, width50, copper_height, 
-            position=[-length35/2+width50, -length50/2, dielectric_height],
+feed2= Box("feed2", "-feedline_length", "width50", "copper_height", 
+            position=["-length35/2+width50", "-length50/2", "dielectric_height"],
             material="pec", solve_inside=False, color='orange')
 
 
-feed3= Box("feed3", feedline_length, -width50, copper_height, 
-            position=[length35/2-width50, length50/2, dielectric_height],
+feed3= Box("feed3", "feedline_length", "-width50", "copper_height", 
+            position=["length35/2-width50", "length50/2", "dielectric_height"],
             material="pec", solve_inside=False, color='orange')
 
 
-feed4= Box("feed4", feedline_length, width50, copper_height, 
-            position=[length35/2-width50, -length50/2, dielectric_height],
+feed4= Box("feed4", "feedline_length", "width50", "copper_height", 
+            position=["length35/2-width50", "-length50/2", "dielectric_height"],
             material="pec", solve_inside=False, color='orange')
 
 
@@ -200,88 +199,88 @@ model.add_action(comp7)
 
 
 #add ports
-dielectric_width = length35+2*(feedline_length-width50)
+dielectric_width_value = length35_value+2*(feedline_length_value-width50_value)
 
-rect1 = Rectangle(name='rect1', height=2*copper_height+dielectric_height,
-                  width=width50,
+rect1 = Rectangle(name='rect1', height="2*copper_height+dielectric_height",
+                  width="width50",
                   axis="X", transparency=0)
 
-rect1.set_position(offset_x=dielectric_width/2,
-                   offset_y=-length35/2,
-                   offset_z=-copper_height)
+rect1.set_position(offset_x="("+dielectric_width+")/2",
+                   offset_y="-length35/2",
+                   offset_z="-copper_height")
 model.add_action(rect1)
 
-field_dir = [[dielectric_width.value/2, -length35.value/2 , -copper_height.value],
-             [dielectric_width.value/2, -length35.value/2, dielectric_height.value+copper_height.value]]
+field_dir = [[dielectric_width_value/2, -length35_value/2 , -copper_height_value],
+             [dielectric_width_value/2, -length35_value/2, dielectric_height_value+copper_height_value]]
 
 lump_port1 = Set_lumped_port("1",rect1, field_dir)
 model.add_action(lump_port1) 
 
 
 ###
-rect2 = Rectangle(name='rect2', height=2*copper_height+dielectric_height,
-                  width=-width50,
+rect2 = Rectangle(name='rect2', height="2*copper_height+dielectric_height",
+                  width="-width50",
                   axis="X", transparency=0)
 
-rect2.set_position(offset_x=(dielectric_width)/2,
-                   offset_y=length35/2,
-                   offset_z=-copper_height)
+rect2.set_position(offset_x="("+dielectric_width+")/2",
+                   offset_y="length35/2",
+                   offset_z="-copper_height")
 model.add_action(rect2)
 
-field_dir = [[dielectric_width.value/2, length35.value/2 , -copper_height.value],
-             [dielectric_width.value/2, length35.value/2, dielectric_height.value+copper_height.value]]
+field_dir = [[dielectric_width_value/2, length35_value/2 , -copper_height_value],
+             [dielectric_width_value/2, length35_value/2, dielectric_height_value+copper_height_value]]
 
 lump_port2 = Set_lumped_port("2",rect2, field_dir)
 model.add_action(lump_port2) 
 
 
 ###
-rect3 = Rectangle(name='rect3', height=2*copper_height+dielectric_height,
-                  width=width50,
+rect3 = Rectangle(name='rect3', height="2*copper_height+dielectric_height",
+                  width="width50",
                   axis="X", transparency=0)
 
-rect3.set_position(offset_x=-(dielectric_width)/2,
-                   offset_y=-length35/2,
-                   offset_z=-copper_height)
+rect3.set_position(offset_x="-("+dielectric_width+")/2",
+                   offset_y="-length35/2",
+                   offset_z="-copper_height")
 model.add_action(rect3)
 
-field_dir = [[-dielectric_width.value/2, -length35.value/2 , -copper_height.value],
-             [-dielectric_width.value/2, -length35.value/2, dielectric_height.value+copper_height.value]]
+field_dir = [[-dielectric_width_value/2, -length35_value/2 , -copper_height_value],
+             [-dielectric_width_value/2, -length35_value/2, dielectric_height_value+copper_height_value]]
 
 lump_port3 = Set_lumped_port("3",rect3, field_dir)
 model.add_action(lump_port3) 
 
 
 ####
-rect4 = Rectangle(name='rect4', height=2*copper_height+dielectric_height,
-                  width=-width50,
+rect4 = Rectangle(name='rect4', height="2*copper_height+dielectric_height",
+                  width="-width50",
                   axis="X", transparency=0)
 
-rect4.set_position(offset_x=-(dielectric_width)/2,
-                   offset_y=length35/2,
-                   offset_z=-copper_height)
+rect4.set_position(offset_x="-("+dielectric_width+")/2",
+                   offset_y="length35/2",
+                   offset_z="-copper_height")
 model.add_action(rect4)
 
-field_dir = [[-dielectric_width.value/2, length35.value/2 , -copper_height.value],
-             [-dielectric_width.value/2, length35.value/2, dielectric_height.value+copper_height.value]]
+field_dir = [[-dielectric_width_value/2, length35_value/2 , -copper_height_value],
+             [-dielectric_width_value/2, length35_value/2, dielectric_height_value+copper_height_value]]
 
 lump_port4 = Set_lumped_port("4",rect4, field_dir)
 model.add_action(lump_port4) 
 
 ##create radiation box
 
-thumb_rule = wavel.to_value(apu.m)/4
+thumb_rule = wavel.to_value(apu.mm)/4
 
-rad_width =  dielectric_width+3*(thumb_rule)
-rad_length =  dielectric_length+3*(thumb_rule)
+rad_width =  dielectric_width+"+3*("+str(thumb_rule)+"mm)"
+rad_length =  dielectric_length+"+3*("+str(thumb_rule)+"mm)"
 
-rad_height = 2*copper_height+dielectric_height+2*(thumb_rule)
+rad_height = "2*copper_height+dielectric_height+2*("+str(thumb_rule)+"mm)"
 
 rad_box = Box("rad_box", rad_width, rad_length, rad_height, transparency=90,
             position=[
-                    -(rad_width)/2,
-                    -(rad_length)/2,
-                    -(rad_height)/2
+                    "-("+rad_width+")/2",
+                    "-("+rad_length+")/2",
+                    "-("+rad_height+")/2"
                 ]
               )
 
@@ -310,7 +309,6 @@ text = model.hfss_implementation()
 f = open(output_filename, "w")
 f.write(text)
 f.close()
-
 
 
 

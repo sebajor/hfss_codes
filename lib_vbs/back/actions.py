@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from PIL import ImageColor
-from parameters import Expression
 
 
 class Action(ABC):
@@ -9,62 +8,84 @@ class Action(ABC):
     """
 
     @abstractmethod
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         raise NotImplementedError
 
     @abstractmethod
-    def plot(self):
+    def plot(self, model_params):
         raise NotImplementedError
 
-    def _hfss_value(self, value, units=None):
-        """
-        """
-        if isinstance(value, Expression):
-            return value.name
 
-        if units is None:
-            units = self.units
 
-        return f"{value}{units}"
+
+class Add_model_parameter(Action):
+
+    def __init__(self, name, value, unit='mm'):
+        self.name = name
+        self.value = value
+        self.unit = unit
+
+    def hfss_implementation(self, model_params):
+        text = '\noDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _\n\
+ "LocalVariables"), Array("NAME:NewProps", Array("NAME:%s", "PropType:=", "VariableProp", "UserDef:=",  _\n\
+ true, "Value:=", "%f%s"))))\n'%(self.name, self.value, self.unit)
+        return text
+
+    def plot(self, model_params):
+        return
 
 
 class Rotate_object(Action):
-
-    def __init__(self, obj, angle, axis="Z", units='deg'):
-        super.__init__()
-        self.obj_name = obj.aname
+    ##TODO: There is no track on the new positions at all after this!
+    ##at this stage only hfss will know where the obj is
+    ##Be carefull bcs here the order of the operations matters
+    def __init__(self, obj, angle, axis="X"):
+        """
+        angle in deg
+        """
+        self.obj_name = obj.name
         self.axis = axis.upper()
-        self.angle = angle
-        self.units = units
+        if(type(angle) is str):
+            self.angle = angle
+        else:
+            self.angle = str(angle)+"deg"
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         text = '\noEditor.Rotate Array("NAME:Selections", "Selections:=", "%s", "NewPartsModelFlag:=",  _\n\
 "Model"), Array("NAME:RotateParameters", "RotateAxis:=", "%s", "RotateAngle:=",  _\n\
-"%s")\n'%(self.obj_name, self.axis, self._hfss_value(self.angle))
+"%s")\n'%(self.obj_name, self.axis, self.angle)
         return text
 
-    def plot(self):
+    def plot(self, model_params):
         return None
 
-
 class Move_object(Action):
+    ##TODO: how to keep track of this outside hfss!
     def __init__(self, obj, x=0, y=0, z=0, units='mm'):
-        super.__init__()
         self.obj_name = obj.name
         self.offsets = [x,y,z]
         self.units = units
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         text = '\noEditor.Move Array("NAME:Selections", "Selections:=", "%s", "NewPartsModelFlag:=",  _\n\
 "Model"),'%self.obj_name
-        text += 'Array("NAME:TranslateParameters", "TranslateVectorX:=", "%s",'%self._hfss_value(self.ofssets[0])
+        s = self.offsets[0]
+        if(type(s) is not str):
+            s = str(s)+self.units
+        text += 'Array("NAME:TranslateParameters", "TranslateVectorX:=", "%s",'%s
+        s = self.offsets[1]
+        if(type(s) is not str):
+            s = str(s)+self.units
         text += '"TranslateVectorY:=",  _\n\
-"%s",'%self._hfss_value(self.offsets[1])
-        text += '"TranslateVectorZ:=", "%s")\n'%self._hfss_value(self.ofssets[2])
+"%s",'%s
+        s = self.offsets[2]
+        if(type(s) is not str):
+            s = str(s)+self.units
+        text += '"TranslateVectorZ:=", "%s")\n'%s
         return text
 
-    def plot(self):
-        return 
+    def plot(self, model_params):
+        return None
 
 class Unite_objects(Action):
     """
@@ -74,13 +95,13 @@ class Unite_objects(Action):
         self.obj1_name = obj1.name
         self.obj2_name = obj2.name 
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         text = '\noEditor.Unite Array("NAME:Selections", "Selections:=", "%s,%s"),\
 Array("NAME:UniteParameters", "KeepOriginals:=",  _\n\
 false)\n'%(self.obj1_name, self.obj2_name)
         return text
 
-    def plot(self):
+    def plot(self, model_params):
         return 
 
 
@@ -93,12 +114,12 @@ class Substract_objects(Action):
         self.obj2_name = obj2.name
         self.keep_obj2 = keep_obj2
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         text = '\noEditor.Subtract Array("NAME:Selections", "Blank Parts:=", "%s", "Tool Parts:=",  _\n\
 "%s"), Array("NAME:SubtractParameters", "KeepOriginals:=", %s)\n'%(self.obj1_name, self.obj2_name, str(self.keep_obj2).lower())
         return text
 
-    def plot(self):
+    def plot(self, model_params):
         return 
 
 
@@ -110,29 +131,26 @@ class Connect_objects(Action):
         self.obj1_name = obj1.name
         self.obj2_name = obj2.name
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         text = '\noEditor.Connect Array("NAME:Selections", "Selections:=",  _\n\
 "%s,%s")'%(self.obj1_name, self.obj2_name)
         return text
     
-    def plot(self):
+    def plot(self, model_params):
         return
-
 
 
 class Generate_revolution_solid(Action):
     """
     Angle in deg!
     """
-    def __init__(self, obj ,segments=0, axis="Z", angle=360, units='deg'):
-        super().__init__()
+    def __init__(self, obj ,segments=0, axis="Z", angle=360):
         self.obj_name = obj.name
-        self.segments = segments
+        self.segments = str(segments)
         self.axis = axis.upper()
-        self.angle = angle
-        self.units = units
+        self.angle = str(angle)
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         text = '\noEditor.SweepAroundAxis Array("NAME:Selections",'
         text += '"Selections:=", "%s",'%self.obj_name
         text += '"NewPartsModelFlag:=",  _\n\
@@ -140,30 +158,36 @@ class Generate_revolution_solid(Action):
 "Round","CheckFaceFaceIntersection:=", false,'
         text += '"SweepAxis:=", "%s",'%self.axis
         text += '"SweepAngle:=",  _\n\
-"%s",'%self._hfss_value(self.angle)
-        text += '"NumOfSegments:=", "%s")\n'%self._hfss_value(self.segments)
+"%sdeg",'%self.angle
+        text += '"NumOfSegments:=", "%s")\n'%self.segments
         return text
 
-    def plot(self):
-        return
+    def plot(self, model_params):
+        return 
 
 
 class Extrude_surface(Action):
-    def __init__(self, obj, thickness, units='mm'):
-        super().__init__()
+    def __init__(self, obj, thickness, unit='mm'):
         self.obj_name = obj.name
         self.thick = thickness
-        self.units = units
+        self.unit = unit
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         text = '\noEditor.ThickenSheet Array("NAME:Selections", "Selections:=", "%s",'%self.obj_name
+        s = self.thick
+        if(type(s) is not str):
+            s = str(s)+self.unit
         text += '"NewPartsModelFlag:=",  _\n\
 "Model"), Array("NAME:SheetThickenParameters", "Thickness:=", "%s", "BothSides:=",  _\n\
-false)\n'%self._hfss_value(self.thick)
+false)\n'%s
         return text
 
-    def plot(self):
+    def plot(self, model_params):
         return
+  
+
+
+
 
 ##Change objects parameters
 
@@ -175,13 +199,13 @@ class Change_object_color(Action):
         else:
             self.new_color = new_color
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         text = '\noEditor.ChangeProperty Array("NAME:AllTabs", Array("NAME:Geometry3DAttributeTab", Array("NAME:PropServers",  _\n\
 "%s"), Array("NAME:ChangedProps", Array("NAME:Color", "R:=", %i, "G:=", %i, "B:=",  _\n\
 %i))))\n'%(self.obj_name, self.new_color[0], self.new_color[1], self.new_color[2])
         return text
 
-    def plot(self):
+    def plot(self, model_params):
         return 
 
 
@@ -190,15 +214,23 @@ class Change_object_material(Action):
         self.obj_name = obj.name
         self.material = material
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         text = '\noEditor.ChangeProperty Array("NAME:AllTabs", Array("NAME:Geometry3DAttributeTab", Array("NAME:PropServers",  _\n\
 "%s"),'%self.obj_name
         text += 'Array("NAME:ChangedProps", Array("NAME:Material", "Value:=", "" & Chr(34) & "%s" & Chr(34) & ""))))\n'%self.material
         return text
 
-    def plot(self):
+    def plot(self, model_params):
         return 
 
+
+
+
+
+
+###
+### Boundaries
+###
 
 
 
@@ -207,7 +239,7 @@ class Set_radiation_boundary(Action):
     def __init__(self, obj):
         self.obj_name = obj.name
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
 
         text = '\nSet oModule = oDesign.GetModule("BoundarySetup")\n'
         text += 'oModule.AssignRadiation Array("NAME:Rad1", "Objects:=", Array("%s"), "IsIncidentField:=",  _\n\
@@ -215,7 +247,7 @@ false, "IsEnforcedField:=", false, "IsFssReference:=", false, "IsForPML:=",  _\n
 false, "UseAdaptiveIE:=", false, "IncludeInPostproc:=", true)\n'%self.obj_name
         return text
 
-    def plot(self):
+    def plot(self, model_params):
         return None
 
 
@@ -238,7 +270,7 @@ class Set_lumped_port(Action):
         self.R = resistance
         self.X = reactance
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         text = '\nSet oModule = oDesign.GetModule("BoundarySetup")\n'
         text +='\noModule.AssignLumpedPort Array("NAME:%s", "Objects:=", Array("%s"),'%(self.name, self.surface_name)
         text += '"RenormalizeAllTerminals:=",  _\n\
@@ -256,7 +288,7 @@ class Set_lumped_port(Action):
         text += '"FullResistance:=", "%fohm", "FullReactance:=", "%fohm")\n'%(self.R, self.X)
         return text
 
-    def plot(self):
+    def plot(self, model_params):
         return None
 
 
@@ -271,7 +303,7 @@ class Create_analysis(Action):
         self.name = name
         self.freq = str(freq)+units
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         text = '\nSet oModule = oDesign.GetModule("AnalysisSetup")'
         text += '\noModule.InsertSetup "HfssDriven", Array("NAME:%s", "Frequency:=", "%s", "PortsOnly:=",  _\n\
 false, "MaxDeltaS:=", 0.02, "UseMatrixConv:=", false, "MaximumPasses:=", 6, "MinimumPasses:=",  _\n\
@@ -283,7 +315,7 @@ false, "SetPortMinMaxTri:=", false, "EnableSolverDomains:=", false, "SaveRadFiel
 false, "SaveAnyFields:=", true, "NoAdditionalRefinementOnImport:=", false)\n'%(self.name,self.freq)
         return text
 
-    def plot(self):
+    def plot(self, model_params):
         return 
 
 
@@ -294,7 +326,7 @@ class Add_fsweep(Action):
         self.fstop = str(stop_freq)+units
         self.fstep = str(step_freq)+units
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         text = '\nSet oModule = oDesign.GetModule("AnalysisSetup")\n'
         text += '\noModule.InsertFrequencySweep "%s",'%self.analysis_name
         text += 'Array("NAME:Sweep", "IsEnabled:=", true, "SetupType:=",  _\n\
@@ -307,7 +339,7 @@ false, "InterpUsePropConst:=", true, "UseDerivativeConvergence:=", false, "Inter
 0.2, "UseFullBasis:=", true, "EnforcePassivity:=", false)\n'
         return text
 
-    def plot(self):
+    def plot(self, model_params):
         return 
 
 
@@ -316,10 +348,10 @@ class Parametric_sweep(Action):
     def __init__(self):
         print("dont exist yet..")
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         return
     
-    def plot(self):
+    def plot(self, model_params):
         return
 
 
@@ -328,11 +360,18 @@ class Generate_report(Action):
     def __init__(self):
         print("dont exist yet..")
 
-    def hfss_implementation(self):
+    def hfss_implementation(self, model_params):
         return
 
-    def plot(self):
+    def plot(self, model_params):
         return 
+
+
+
+
+
+
+
 
 
 

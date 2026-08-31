@@ -11,131 +11,101 @@ Set oProject = oDesktop.SetActiveProject("test")
 Set oDesign = oProject.SetActiveDesign("HFSSDesign1")
 Set oEditor = oDesign.SetActiveEditor("3D Modeler")
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:dielectric_height", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "1.600000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:dielectric_height", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "1.6mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:copper_height", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "0.035000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:copper_height", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "0.035mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:C_width", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "11.100000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:C_width", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "11.1mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:L_width", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "0.408000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:L_width", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "0.408mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:C1_len", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "1.700000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:C1_len", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "1.7mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:L1_len", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "5.460000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:L1_len", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "5.46mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:C2_len", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "6.360000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:C2_len", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "6.36mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:L2_len", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "7.460000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:L2_len", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "7.46mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:C3_len", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "4.660000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:C3_len", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "4.66mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:L3_len", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "2.000000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:L3_len", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "2mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:input_line_len", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "6.180000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:input_line_len", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "6.18mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:input_line_width", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "3.000000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:input_line_width", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "3mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:output_line_len", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "6.180000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:output_line_len", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "6.18mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:output_line_width", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "3.000000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:output_line_width", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "3mm"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
- "LocalVariables"), Array("NAME:NewProps", Array("NAME:substrate_gap", "PropType:=", "VariableProp", "UserDef:=",  _
- true, "Value:=", "5.000000mm"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:substrate_gap", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "5mm"))))
 
-oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "-(input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len)/2", "YPosition:=",  _
-  "-(max(C_width, L_width)+substrate_gap)/2", "ZPosition:=", "-copper_height-dielectric_height", "XSize:=", "input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len", "YSize:=", "max(C_width, L_width)+substrate_gap", "ZSize:=",  _ 
+oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "((-(((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len))/2)", "YPosition:=",  _
+  "((-(L_width+substrate_gap))/2)", "ZPosition:=", "((-copper_height)-dielectric_height)", "XSize:=", "(((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len)", "YSize:=", "(L_width+substrate_gap)", "ZSize:=",  _ 
 "copper_height"),Array("NAME:Attributes", "Name:=", "ground_plane","Flags:=", "", "Color:=",  _
   "(255 165 0)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
   "","MaterialValue:=", "" & Chr(34) & "pec" & Chr(34) & "", "SolveInside:=",  _
   false)
 
-oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "-(input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len)/2", "YPosition:=",  _
-  "-(max(C_width, L_width)+substrate_gap)/2", "ZPosition:=", "-dielectric_height", "XSize:=", "input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len", "YSize:=", "max(C_width, L_width)+substrate_gap", "ZSize:=",  _ 
+oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "((-(((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len))/2)", "YPosition:=",  _
+  "((-(L_width+substrate_gap))/2)", "ZPosition:=", "(-dielectric_height)", "XSize:=", "(((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len)", "YSize:=", "(L_width+substrate_gap)", "ZSize:=",  _ 
 "dielectric_height"),Array("NAME:Attributes", "Name:=", "diel","Flags:=", "", "Color:=",  _
   "(70 130 180)", "Transparency:=", 1, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
   "","MaterialValue:=", "" & Chr(34) & "FR4_epoxy" & Chr(34) & "", "SolveInside:=",  _
   true)
 
-oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "-(input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len)/2", "YPosition:=",  _
-  "-(input_line_width)/2", "ZPosition:=", "0mm", "XSize:=", "input_line_len", "YSize:=", "input_line_width", "ZSize:=",  _ 
+oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "((-(((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len))/2)", "YPosition:=",  _
+  "((-input_line_width)/2)", "ZPosition:=", "0mm", "XSize:=", "input_line_lenmm", "YSize:=", "input_line_widthmm", "ZSize:=",  _ 
 "copper_height"),Array("NAME:Attributes", "Name:=", "filter_stage0","Flags:=", "", "Color:=",  _
   "(255 165 0)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
   "","MaterialValue:=", "" & Chr(34) & "pec" & Chr(34) & "", "SolveInside:=",  _
   false)
 
-oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "-(input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len)/2+input_line_len", "YPosition:=",  _
-  "-(C_width)/2", "ZPosition:=", "0mm", "XSize:=", "C1_len", "YSize:=", "C_width", "ZSize:=",  _ 
+oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "(((-(((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len))/2)+input_line_len)", "YPosition:=",  _
+  "((-C_width)/2)", "ZPosition:=", "0mm", "XSize:=", "C1_lenmm", "YSize:=", "C_widthmm", "ZSize:=",  _ 
 "copper_height"),Array("NAME:Attributes", "Name:=", "filter_stage1","Flags:=", "", "Color:=",  _
   "(255 165 0)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
   "","MaterialValue:=", "" & Chr(34) & "pec" & Chr(34) & "", "SolveInside:=",  _
   false)
 
-oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "-(input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len)/2+input_line_len+C1_len", "YPosition:=",  _
-  "-(L_width)/2", "ZPosition:=", "0mm", "XSize:=", "L1_len", "YSize:=", "L_width", "ZSize:=",  _ 
+oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "((((-(((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len))/2)+input_line_len)+C1_len)", "YPosition:=",  _
+  "((-L_width)/2)", "ZPosition:=", "0mm", "XSize:=", "L1_lenmm", "YSize:=", "L_widthmm", "ZSize:=",  _ 
 "copper_height"),Array("NAME:Attributes", "Name:=", "filter_stage2","Flags:=", "", "Color:=",  _
   "(255 165 0)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
   "","MaterialValue:=", "" & Chr(34) & "pec" & Chr(34) & "", "SolveInside:=",  _
   false)
 
-oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "-(input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len)/2+input_line_len+C1_len+L1_len", "YPosition:=",  _
-  "-(C_width)/2", "ZPosition:=", "0mm", "XSize:=", "C2_len", "YSize:=", "C_width", "ZSize:=",  _ 
+oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "(((((-(((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len))/2)+input_line_len)+C1_len)+L1_len)", "YPosition:=",  _
+  "((-C_width)/2)", "ZPosition:=", "0mm", "XSize:=", "C2_lenmm", "YSize:=", "C_widthmm", "ZSize:=",  _ 
 "copper_height"),Array("NAME:Attributes", "Name:=", "filter_stage3","Flags:=", "", "Color:=",  _
   "(255 165 0)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
   "","MaterialValue:=", "" & Chr(34) & "pec" & Chr(34) & "", "SolveInside:=",  _
   false)
 
-oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "-(input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len)/2+input_line_len+C1_len+L1_len+C2_len", "YPosition:=",  _
-  "-(L_width)/2", "ZPosition:=", "0mm", "XSize:=", "L2_len", "YSize:=", "L_width", "ZSize:=",  _ 
+oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "((((((-(((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len))/2)+input_line_len)+C1_len)+L1_len)+C2_len)", "YPosition:=",  _
+  "((-L_width)/2)", "ZPosition:=", "0mm", "XSize:=", "L2_lenmm", "YSize:=", "L_widthmm", "ZSize:=",  _ 
 "copper_height"),Array("NAME:Attributes", "Name:=", "filter_stage4","Flags:=", "", "Color:=",  _
   "(255 165 0)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
   "","MaterialValue:=", "" & Chr(34) & "pec" & Chr(34) & "", "SolveInside:=",  _
   false)
 
-oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "-(input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len)/2+input_line_len+C1_len+L1_len+C2_len+L2_len", "YPosition:=",  _
-  "-(C_width)/2", "ZPosition:=", "0mm", "XSize:=", "C3_len", "YSize:=", "C_width", "ZSize:=",  _ 
+oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "(((((((-(((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len))/2)+input_line_len)+C1_len)+L1_len)+C2_len)+L2_len)", "YPosition:=",  _
+  "((-C_width)/2)", "ZPosition:=", "0mm", "XSize:=", "C3_lenmm", "YSize:=", "C_widthmm", "ZSize:=",  _ 
 "copper_height"),Array("NAME:Attributes", "Name:=", "filter_stage5","Flags:=", "", "Color:=",  _
   "(255 165 0)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
   "","MaterialValue:=", "" & Chr(34) & "pec" & Chr(34) & "", "SolveInside:=",  _
   false)
 
-oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "-(input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len)/2+input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len", "YPosition:=",  _
-  "-(L_width)/2", "ZPosition:=", "0mm", "XSize:=", "L3_len", "YSize:=", "L_width", "ZSize:=",  _ 
+oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "((((((((-(((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len))/2)+input_line_len)+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)", "YPosition:=",  _
+  "((-L_width)/2)", "ZPosition:=", "0mm", "XSize:=", "L3_lenmm", "YSize:=", "L_widthmm", "ZSize:=",  _ 
 "copper_height"),Array("NAME:Attributes", "Name:=", "filter_stage6","Flags:=", "", "Color:=",  _
   "(255 165 0)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
   "","MaterialValue:=", "" & Chr(34) & "pec" & Chr(34) & "", "SolveInside:=",  _
   false)
 
-oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "-(input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len)/2+input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len", "YPosition:=",  _
-  "-(output_line_width)/2", "ZPosition:=", "0mm", "XSize:=", "output_line_len", "YSize:=", "output_line_width", "ZSize:=",  _ 
+oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "(((((((((-(((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len))/2)+input_line_len)+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)", "YPosition:=",  _
+  "((-output_line_width)/2)", "ZPosition:=", "0mm", "XSize:=", "output_line_lenmm", "YSize:=", "output_line_widthmm", "ZSize:=",  _ 
 "copper_height"),Array("NAME:Attributes", "Name:=", "filter_stage7","Flags:=", "", "Color:=",  _
   "(255 165 0)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
   "","MaterialValue:=", "" & Chr(34) & "pec" & Chr(34) & "", "SolveInside:=",  _
@@ -163,8 +133,8 @@ oEditor.Unite Array("NAME:Selections", "Selections:=", "filter_stage0,filter_sta
 false)
 
 OEditor.CreateRectangle Array("NAME:RectangleParameters", "IsCovered:=", true,"XStart:=",  _
-"-(input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len)/2", "YStart:=", "-input_line_width/2", "ZStart:=", "-copper_height-dielectric_height","Width:=", "input_line_width","Height:=",  _
-"2*copper_height+dielectric_height","WhichAxis:=", "X"), Array("NAME:Attributes", "Name:=", "rect1", "Flags:=",  _
+"((-(((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len))/2)", "YStart:=", "((-input_line_width)/2)", "ZStart:=", "((-copper_height)-dielectric_height)","Width:=", "input_line_width","Height:=",  _
+"((2*copper_height)+dielectric_height)","WhichAxis:=", "X"), Array("NAME:Attributes", "Name:=", "rect1", "Flags:=",  _
 "","Color:=", "(255 165 0)","Transparency:=", 0,"PartCoordinateSystem:=",  _
 "Global", "UDMId:=", "", "MaterialValue:=", "" & Chr(34) & "vacuum" & Chr(34) & "","SolveInside:=",  _
 true)
@@ -177,8 +147,8 @@ oModule.AssignLumpedPort Array("NAME:1", "Objects:=", Array("rect1"),"Renormaliz
   false, "ReporterFilter:=", Array(true),"FullResistance:=", "50.000000ohm", "FullReactance:=", "0.000000ohm")
 
 OEditor.CreateRectangle Array("NAME:RectangleParameters", "IsCovered:=", true,"XStart:=",  _
-"(input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len)/2", "YStart:=", "-input_line_width/2", "ZStart:=", "-copper_height-dielectric_height","Width:=", "input_line_width","Height:=",  _
-"2*copper_height+dielectric_height","WhichAxis:=", "X"), Array("NAME:Attributes", "Name:=", "rect2", "Flags:=",  _
+"((((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len)/2)", "YStart:=", "((-input_line_width)/2)", "ZStart:=", "((-copper_height)-dielectric_height)","Width:=", "input_line_width","Height:=",  _
+"((2*copper_height)+dielectric_height)","WhichAxis:=", "X"), Array("NAME:Attributes", "Name:=", "rect2", "Flags:=",  _
 "","Color:=", "(255 165 0)","Transparency:=", 0,"PartCoordinateSystem:=",  _
 "Global", "UDMId:=", "", "MaterialValue:=", "" & Chr(34) & "vacuum" & Chr(34) & "","SolveInside:=",  _
 true)
@@ -190,9 +160,9 @@ oModule.AssignLumpedPort Array("NAME:2", "Objects:=", Array("rect2"),"Renormaliz
   true,Array("NAME:IntLine", "Start:=", Array("20.0mm", "-1.5mm","-1.635mm"),"End:=", Array("20.0mm", "-1.5mm","0.035mm")),"CharImp:=", "Zpi", "AlignmentGroup:=", 0, "RenormImp:=", "50ohm")), "ShowReporterFilter:=",  _
   false, "ReporterFilter:=", Array(true),"FullResistance:=", "50.000000ohm", "FullReactance:=", "0.000000ohm")
 
-oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "-(input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len+3*(24.98270483333333mm))/2", "YPosition:=",  _
-  "-(max(C_width, L_width)+substrate_gap+3*(24.98270483333333mm))/2", "ZPosition:=", "-(2*copper_height+dielectric_height+2*(24.98270483333333mm))/2", "XSize:=", "input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len+3*(24.98270483333333mm)", "YSize:=", "max(C_width, L_width)+substrate_gap+3*(24.98270483333333mm)", "ZSize:=",  _ 
-"2*copper_height+dielectric_height+2*(24.98270483333333mm)"),Array("NAME:Attributes", "Name:=", "rad_box","Flags:=", "", "Color:=",  _
+oEditor.CreateBox Array("NAME:BoxParameters","XPosition:=", "((-((((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len)+0.0749481145))/2)", "YPosition:=",  _
+  "((-((L_width+substrate_gap)+0.0749481145))/2)", "ZPosition:=", "((-(((2*copper_height)+dielectric_height)+0.04996540966666667))/2)", "XSize:=", "((((((((input_line_len+C1_len)+L1_len)+C2_len)+L2_len)+C3_len)+L3_len)+output_line_len)+0.0749481145)", "YSize:=", "((L_width+substrate_gap)+0.0749481145)", "ZSize:=",  _ 
+"(((2*copper_height)+dielectric_height)+0.04996540966666667)"),Array("NAME:Attributes", "Name:=", "rad_box","Flags:=", "", "Color:=",  _
   "(70 130 180)", "Transparency:=", 1, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
   "","MaterialValue:=", "" & Chr(34) & "vacuum" & Chr(34) & "", "SolveInside:=",  _
   true)

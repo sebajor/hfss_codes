@@ -16,7 +16,12 @@ import numpy as np
 class hfss_vbs_model():
     def __init__(self, name):
         self.name = name 
+        self.model_params = {}
         self.actions = []
+
+    def add_model_parameter(self, name, value, unit='mm'):
+        self.model_params[name] = {"value":value, "unit":unit}
+        self.actions.append(action.Add_model_parameter(name, value, unit))
 
     def add_action(self, action):
         """
@@ -43,5 +48,5 @@ Set oDesign = oProject.SetActiveDesign("HFSSDesign1")\n\
 Set oEditor = oDesign.SetActiveEditor("3D Modeler")\n'%self.name
         #text += 'Set oModule = oDesign.GetModule("BoundarySetup")\n'
         for action in self.actions:
-            text += action.hfss_implementation()
+            text += action.hfss_implementation(self.model_params)
         return text

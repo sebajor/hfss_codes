@@ -11,15 +11,25 @@ Set oProject = oDesktop.SetActiveProject("test")
 Set oDesign = oProject.SetActiveDesign("HFSSDesign1")
 Set oEditor = oDesign.SetActiveEditor("3D Modeler")
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:a", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "1"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
+ "LocalVariables"), Array("NAME:NewProps", Array("NAME:a", "PropType:=", "VariableProp", "UserDef:=",  _
+ true, "Value:=", "1.000000"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:b", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "0.5"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
+ "LocalVariables"), Array("NAME:NewProps", Array("NAME:b", "PropType:=", "VariableProp", "UserDef:=",  _
+ true, "Value:=", "0.500000"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:curve_points", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "10"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
+ "LocalVariables"), Array("NAME:NewProps", Array("NAME:curve_points", "PropType:=", "VariableProp", "UserDef:=",  _
+ true, "Value:=", "10.000000"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:ellipsoid_thick", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "0.005"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
+ "LocalVariables"), Array("NAME:NewProps", Array("NAME:ellipsoid_thick", "PropType:=", "VariableProp", "UserDef:=",  _
+ true, "Value:=", "0.005000"))))
 
-oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers", "LocalVariables"), Array("NAME:NewProps", Array("NAME:rotation_segments", "PropType:=", "VariableProp", "UserDef:=", true, "Value:=", "12"))))
+oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Array("NAME:PropServers",  _
+ "LocalVariables"), Array("NAME:NewProps", Array("NAME:rotation_segments", "PropType:=", "VariableProp", "UserDef:=",  _
+ true, "Value:=", "12.000000"))))
 
 oEditor.CreateEquationCurve Array("NAME:EquationBasedCurveParameters","XtFunction:=",  _
 "(a*sin(_t))*1mm","YtFunction:=", "(0)*1mm","ZtFunction:=", "(-b*cos(_t))*1mm","tStart:=",  _

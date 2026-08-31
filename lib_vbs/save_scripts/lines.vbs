@@ -13,7 +13,8 @@ Set oDesktop = oAnsoftApp.GetAppDesktop()
 oDesktop.RestoreWindow
 Set oProject = oDesktop.SetActiveProject("test")
 Set oDesign = oProject.SetActiveDesign("HFSSDesign1")
-Set oEditor = oDesign.SetActiveEditor("3D Modeler")
+Set oEditor = oDesign.SetActiveEditor
+
 oEditor.CreatePolyline Array("NAME:PolylineParameters", "IsPolylineCovered:=", true, "IsPolylineClosed:=",  _
   true, Array("NAME:PolylinePoints", Array("NAME:PLPoint", "X:=", "0mm", "Y:=", "0mm", "Z:=",  _
   "0mm"), Array("NAME:PLPoint", "X:=", "0mm", "Y:=", "100mm", "Z:=", "0mm"), Array("NAME:PLPoint", "X:=",  _
@@ -29,9 +30,35 @@ oEditor.CreatePolyline Array("NAME:PolylineParameters", "IsPolylineCovered:=", t
   "(132 132 193)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
   "", "MaterialValue:=", "" & Chr(34) & "vacuum" & Chr(34) & "", "SolveInside:=",  _
   true)
+
+##some order...
+oEditor.CreatePolyline Array("NAME:PolylineParameters", "IsPolylineCovered:=", true, "IsPolylineClosed:=",  _
+  true, Array("NAME:PolylinePoints", _
+  Array("NAME:PLPoint", "X:=", "0mm", "Y:=", "0mm", "Z:=","0mm"), _
+  Array("NAME:PLPoint", "X:=", "0mm", "Y:=", "100mm", "Z:=", "0mm"), _
+  Array("NAME:PLPoint", "X:=", "50mm", "Y:=", "100mm", "Z:=", "0mm"), _
+  Array("NAME:PLPoint", "X:=", "50mm", "Y:=", "0mm", "Z:=", "0mm"), _
+  Array("NAME:PLPoint", "X:=", "0mm", "Y:=", "0mm", "Z:=", "0mm")), _
+  Array("NAME:PolylineSegments", _
+  Array("NAME:PLSegment", "SegmentType:=", "Line", "StartIndex:=", 0, "NoOfPoints:=", 2), _
+  Array("NAME:PLSegment", "SegmentType:=", "Line", "StartIndex:=", 1, "NoOfPoints:=", 2), _
+  Array("NAME:PLSegment", "SegmentType:=", "Line", "StartIndex:=", 2, "NoOfPoints:=", 2), _
+  Array("NAME:PLSegment", "SegmentType:=", "Line", "StartIndex:=", 3, "NoOfPoints:=", 2)), _
+  Array("NAME:PolylineXSection", "XSectionType:=", "None", "XSectionOrient:=", "Auto", "XSectionWidth:=", "0mm", _
+  "XSectionTopWidth:=","0mm", "XSectionHeight:=", "0mm", "XSectionNumSegments:=", "0",  _
+  "XSectionBendType:=", "Corner")), Array("NAME:Attributes", "Name:=", "Polyline1", "Flags:=", "", "Color:=",  _
+  "(132 132 193)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
+  "", "MaterialValue:=", "" & Chr(34) & "vacuum" & Chr(34) & "", "SolveInside:=",  _
+  true)
+
+
+
+
 oEditor.ThickenSheet Array("NAME:Selections", "Selections:=", "Polyline1", "NewPartsModelFlag:=",  _
   "Model"), Array("NAME:SheetThickenParameters", "Thickness:=", "50mm", "BothSides:=",  _
   false)
+
+
 oEditor.CreateEquationCurve Array("NAME:EquationBasedCurveParameters", "XtFunction:=",  _
   "0.5*sin(_t)", "YtFunction:=", "cos(_t)", "ZtFunction:=", "0", "tStart:=", "0", "tEnd:=",  _
   "180", "NumOfPointsOnCurve:=", "0", "Version:=", 1, Array("NAME:PolylineXSection", "XSectionType:=",  _
@@ -41,6 +68,8 @@ oEditor.CreateEquationCurve Array("NAME:EquationBasedCurveParameters", "XtFuncti
   "(132 132 193)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
   "", "MaterialValue:=", "" & Chr(34) & "vacuum" & Chr(34) & "", "SolveInside:=",  _
   true)
+
+
 oEditor.Delete Array("NAME:Selections", "Selections:=", "Polyline1")
 oEditor.CoverLines Array("NAME:Selections", "Selections:=", "EquationCurve1", "NewPartsModelFlag:=",  _
   "Model")

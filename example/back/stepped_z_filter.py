@@ -1,7 +1,6 @@
 import sys
 sys.path.append("../lib_vbs")
 from model import *
-from parameters import *
 from surfaces import *
 from actions import *
 from volumes import *
@@ -105,20 +104,20 @@ model.add_action(substrate_gap)
 ###
 
 ##Ill place the gnd and the dielectric under the z=0 plane
-dielectric_width = input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len
-dielectric_len = L_width+substrate_gap
+dielectric_width = "input_line_len+C1_len+L1_len+C2_len+L2_len+C3_len+L3_len+output_line_len"
+dielectric_len = "max(C_width, L_width)+substrate_gap"
 
 
-gnd = Box('ground_plane',dielectric_width, dielectric_len, copper_height, 
-          position=[-dielectric_width/2,-(dielectric_len)/2,-copper_height-dielectric_height],
+gnd = Box('ground_plane',dielectric_width, dielectric_len, "copper_height", 
+          position=["-("+dielectric_width+")/2","-("+dielectric_len+")/2","-copper_height-dielectric_height"],
           material='pec', solve_inside=False, color='orange')
 
 model.add_action(gnd)
 
 
 ##substrate
-diel = Box('diel',dielectric_width, dielectric_len, dielectric_height, 
-          position=[-(dielectric_width)/2,-(dielectric_len)/2,-dielectric_height],
+diel = Box('diel',dielectric_width, dielectric_len, "dielectric_height", 
+          position=["-("+dielectric_width+")/2","-("+dielectric_len+")/2","-dielectric_height"],
           material=dielectric_material)
 
 model.add_action(diel)
@@ -136,16 +135,16 @@ stages = [[input_line_len, input_line_width],
           [L3_len, L_width],
           [output_line_len, output_line_width]]
 
-curr_pos = -(dielectric_width)/2
+curr_pos = "-("+dielectric_width+")/2"
 elements = []
 
 for i, stage  in enumerate(stages):
     len_attr, width_attr = stage
     name = "filter_stage%i"%i
-    element = Box(name, len_attr.name, width_attr.name, copper_height,
-        position=[curr_pos, -(width_attr)/2, 0],
+    element = Box(name, len_attr.name, width_attr.name, "copper_height",
+        position=[curr_pos, "-("+width_attr.name+")/2", 0],
         material="pec", solve_inside=False, color='orange')
-    curr_pos += len_attr
+    curr_pos += '+%s'%len_attr.name
     elements.append(element)
     model.add_action(element)
 
@@ -156,44 +155,44 @@ for element in elements[1:]:
 
 
 ##lump port
-dielectric_width_value = (input_line_len+
-                          C1_len+
-                          L1_len+
-                          C2_len+
-                          L2_len+
-                          C3_len+
-                          L3_len+
-                          output_line_len)
+dielectric_width_value = (input_line_len_value+
+                          C1_len_value+
+                          L1_len_value+
+                          C2_len_value+
+                          L2_len_value+
+                          C3_len_value+
+                          L3_len_value+
+                          output_line_len_value)
 
 
-rect1 = Rectangle(name='rect1', height=2*copper_height+dielectric_height,
-                  width=input_line_width,
+rect1 = Rectangle(name='rect1', height="2*copper_height+dielectric_height",
+                  width="input_line_width",
                   axis="X", transparency=0)
 
-rect1.set_position(offset_x=-(dielectric_width)/2,
-                   offset_y=-input_line_width/2,
-                   offset_z=-copper_height-dielectric_height)
+rect1.set_position(offset_x="-("+dielectric_width+")/2",
+                   offset_y="-input_line_width/2",
+                   offset_z="-copper_height-dielectric_height")
 model.add_action(rect1)
 
-field_dir = [[-dielectric_width.value/2, -input_line_width.value/2 , -copper_height.value-dielectric_height.value],
-             [-dielectric_width.value/2, -input_line_width.value/2, copper_height.value]]
+field_dir = [[-dielectric_width_value/2, -input_line_width_value/2 , -copper_height_value-dielectric_height_value],
+             [-dielectric_width_value/2, -input_line_width_value/2, copper_height_value]]
 
 lump_port1 = Set_lumped_port("1",rect1, field_dir)
 model.add_action(lump_port1) 
 
 
 
-rect2 = Rectangle(name='rect2', height=2*copper_height+dielectric_height,
-                  width=input_line_width,
+rect2 = Rectangle(name='rect2', height="2*copper_height+dielectric_height",
+                  width="input_line_width",
                   axis="X", transparency=0)
 
-rect2.set_position(offset_x=dielectric_width/2,
-                   offset_y=-input_line_width/2,
-                   offset_z=-copper_height-dielectric_height)
+rect2.set_position(offset_x="("+dielectric_width+")/2",
+                   offset_y="-input_line_width/2",
+                   offset_z="-copper_height-dielectric_height")
 model.add_action(rect2)
 
-field_dir = [[dielectric_width.value/2, -input_line_width.value/2 , -copper_height.value-dielectric_height.value],
-             [dielectric_width.value/2, -input_line_width.value/2, copper_height.value]]
+field_dir = [[dielectric_width_value/2, -input_line_width_value/2 , -copper_height_value-dielectric_height_value],
+             [dielectric_width_value/2, -input_line_width_value/2, copper_height_value]]
 
 lump_port2 = Set_lumped_port("2",rect2, field_dir)
 model.add_action(lump_port2) 
@@ -204,18 +203,18 @@ model.add_action(lump_port2)
 
 ##radiation box
 
-thumb_rule = wavel.to_value(apu.m)/4
+thumb_rule = wavel.to_value(apu.mm)/4
 
-rad_width =  dielectric_width+3*(thumb_rule)
-rad_length =  dielectric_len+3*(thumb_rule)
+rad_width =  dielectric_width+"+3*("+str(thumb_rule)+"mm)"
+rad_length =  dielectric_len+"+3*("+str(thumb_rule)+"mm)"
 
-rad_height = 2*copper_height+dielectric_height+2*(thumb_rule)
+rad_height = "2*copper_height+dielectric_height+2*("+str(thumb_rule)+"mm)"
 
 rad_box = Box("rad_box", rad_width, rad_length, rad_height, transparency=90,
             position=[
-                    -(rad_width)/2,
-                    -(rad_length)/2,
-                    -(rad_height)/2
+                    "-("+rad_width+")/2",
+                    "-("+rad_length+")/2",
+                    "-("+rad_height+")/2"
                 ]
               )
 
@@ -249,7 +248,6 @@ text = model.hfss_implementation()
 f = open(output_filename, "w")
 f.write(text)
 f.close()
-
 
 
 
