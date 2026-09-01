@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 from parameters import Expression
+import numpy as np
+import matplotlib.pyplot as plt
+import ipdb
 
 class Lines(ABC):
 
@@ -78,16 +81,55 @@ true)\n'%(self.name)
         return 
 
 
-class Polycurve(Lines):
-    ##TOOD!! I think this one is the most interesting for my application so I
-    ### should take the time to implement correctly the plotting functionality
-    ##
-    def __init__(self, name, units=''):
-        super().__init__(self)
+class Polycurve_plane(Lines):
+    """
+    Points should be a list with the [x,y] points that forms the figure
+    """
+    def __init__(self, name, points, axis="Z", plane_offset=0, closed=False,
+                 units='mm', material='vacuum'):
+        super().__init__(name, units=units, material=material)
+        self.points = points
+        self.closed = closed
+        self.plane_offset = plane_offset
 
-    def hfss_implementation(self, model_params):
-        return 
 
-    def plot(self, model_params):
-        return 
+    def hfss_implementation(self):
+        text = '\noEditor.CreatePolyline Array("NAME:PolylineParameters", "IsPolylineCovered:=", true,'
+        text += '"IsPolylineClosed:=",  _\n\
+  %s, Array("NAME:PolylinePoints", _\n'%(str(self.closed).lower())
+        for point in self.points:
+            x,y = point
+            text += ' Array("NAME:PLPoint", "X:=", "%s", "Y:=", "%s", "Z:=","%s"), _\n'%(
+                self._hfss_value(x), self._hfss_value(y), self._hfss_value(self.plane_offset)
+                    )
+        ##need to delete the last comma..
+        text = text[:-4]
+        text += '), Array("NAME:PolylineSegments", _\n'
+        for i in range(len(self.points)-1):
+            text += 'Array("NAME:PLSegment", "SegmentType:=", "Line", "StartIndex:=", %i, "NoOfPoints:=", 2), _\n'%i
+        ##need to delete the last comma..
+        text = text[:-4]
+        text += '), Array("NAME:PolylineXSection", "XSectionType:=", "None", "XSectionOrient:=", "Auto", "XSectionWidth:=", "0mm", _\n\
+  "XSectionTopWidth:=","0mm", "XSectionHeight:=", "0mm", "XSectionNumSegments:=", "0",  _\n\
+  "XSectionBendType:=", "Corner")),'
+        text += 'Array("NAME:Attributes", "Name:=", "%s",'%self.name
+        text += '"Flags:=", "", "Color:=",  _\n\
+  "(132 132 193)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _\n\
+  "", "MaterialValue:=", "" & Chr(34) & "vacuum" & Chr(34) & "", "SolveInside:=", true)'
+        return text
+
+    def _get_plot_values(self):
+        plot_points = np.zeros((len(self.points),2))
+        for i,point in enumerate(self.points):
+            x,y = point
+            if isinstance(x, Expression):
+                x = x.value
+            if isinstance(y, Expression):
+                y = y.value
+            plot_points[i,:] = [x,y]
+        return plot_points
+
+    def plot(self):
+        plot_points = self._get_plot_values()
+        plt.plot(plot_points[:,0], plot_points[:,1], '*-')
 

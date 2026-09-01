@@ -128,6 +128,10 @@ class Box(Volume):
     def plot(self):
         return 
 
+
+
+
+
 class Sphere(Volume):
 
     def __init__(self, name, position, radius, material='vaccum',
@@ -156,19 +160,5 @@ class Sphere(Volume):
         text += '"MaterialValue:=", "" & Chr(34) & "%s" & Chr(34) & "",'%self.amterial
         text += '"SolveInside:=",  %s)'%(str(self.solve_inside).lower())
         return text
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

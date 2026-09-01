@@ -7,6 +7,8 @@ class Action(ABC):
     """
     Parent class
     """
+    def __init__(self, units='mm'):
+        self.units = units
 
     @abstractmethod
     def hfss_implementation(self):
@@ -200,7 +202,9 @@ class Change_object_material(Action):
         return 
 
 
-
+###
+### boundaries and exitations
+###
 
 class Set_radiation_boundary(Action):
 
@@ -258,6 +262,151 @@ class Set_lumped_port(Action):
 
     def plot(self):
         return None
+
+
+class Set_floquet_port(Action):
+    """
+    Im lazy... just going to support 2 modes
+    mode_vector is a 2 element list with the orig, dest vector
+    """
+
+    def __init__(self, name, face, 
+                 mode_x_vector, mode_y_vector,
+                 units = 'mm',
+                 scan_phi=0, scan_theta=0,
+                 scan_units='deg'
+                 ):
+        super().__init__()
+        self.name = name
+        self.face = face
+        self.modes = 2
+        self.scan_phi = scan_phi
+        self.scan_theta = scan_theta
+        self.mode_x_vector = mode_x_vector
+        self.mode_y_vector = mode_y_vector
+        self.scan_units = "deg"
+
+    def hfss_implementation(self):
+        modex_orig = self.mode_x_vector[0]
+        modex_dest = self.mode_x_vector[1]
+        modey_orig = self.mode_y_vector[0]
+        modey_dest = self.mode_y_vector[1]
+
+        text = '\nSet oModule = oDesign.GetModule("BoundarySetup")\n'
+        text += 'oModule.AssignFloquetPort Array("NAME:%s",'%self.name
+        text += '"Faces:=", Array(%s),'%self.face
+        text += '"NumModes:=",  _\n\
+  %i,'%self.modes
+        text += '"RenormalizeAllTerminals:=", true, "DoDeembed:=", false, Array("NAME:Modes", Array("NAME:Mode1", "ModeNum:=",  _\n\
+  1, "UseIntLine:=", false), Array("NAME:Mode2", "ModeNum:=", 2, "UseIntLine:=",  _\n\
+  false)), "ShowReporterFilter:=", false, "ReporterFilter:=", Array(false, false), "UseScanAngles:=",  _\n\
+  true,'
+        text += '"Phi:=", "%s", "Theta:=", "%s",'%(self._hfss_value(self.scan_phi, units=self.scan_units),
+                                                   self._hfss_value(self.scan_theta, units=self.scan_units))
+        text += 'Array("NAME:LatticeAVector", "Start:=", Array( _\n\
+  "%f%s", "%f%s", "%f%s"), "End:=", Array("%f%s", "%f%s", "%f%s")),'%(modex_orig[0], self.units,
+                                                                      modex_orig[1], self.units,
+                                                                      modex_orig[2], self.units,
+                                                                      modex_dest[0], self.units,
+                                                                      modex_dest[1], self.units, 
+                                                                      modex_dest[2], self.units)
+        text += 'Array("NAME:LatticeBVector", "Start:=", Array( _\n\
+  "%f%s", "%f%s", "%f%s"), "End:=", Array("%f%s", "%f%s", "%f%s")),'%(modey_orig[0], self.units,
+                                                                      modey_orig[1], self.units,
+                                                                      modey_orig[2], self.units,
+                                                                      modey_dest[0], self.units,
+                                                                      modey_dest[1], self.units, 
+                                                                      modey_dest[2], self.units)
+        
+        text +=  'Array("NAME:ModesList", Array("NAME:Mode", "ModeNumber:=",  _\n\
+  1, "IndexM:=", 0, "IndexN:=", 0, "KC2:=", 0, "PropagationState:=", "Propagating", "Attenuation:=",  _\n\
+  0, "PolarizationState:=", "TE", "AffectsRefinement:=", false), Array("NAME:Mode", "ModeNumber:=",  _\n\
+  2, "IndexM:=", 0, "IndexN:=", 0, "KC2:=", 0, "PropagationState:=", "Propagating", "Attenuation:=",  _\n\
+  0, "PolarizationState:=", "TM", "AffectsRefinement:=", false)))\n'
+        return text
+
+    def plot(self):
+        return 
+
+
+
+
+###
+### coupled boundaries
+###
+
+class Set_master_boundary(Action):
+    """
+    You need to call Get_box_faces before using this one..
+    direction is a len 2 list  (with numerical values!)
+    """
+    def __init__(self, name, face, direction, units='mm', reverse_v=False):
+        self.name = name
+        self.face = face
+        self.direction = direction
+        self.units = units
+        self.reverse_v = reverse_v
+
+    def hfss_implementation(self):
+        origin = self.direction[0]
+        dest = self.direction[1]
+        text = '\nSet oModule = oDesign.GetModule("BoundarySetup")\n'
+        text += 'oModule.AssignMaster Array("NAME:%s",'%self.name
+        text += '"Faces:=", Array(%s),'%self.face
+        text += 'Array("NAME:CoordSysVector", "Origin:=", Array( _\n\
+"%f%s", "%f%s", "%f%s"),'%(origin[0], self.units, origin[1], self.units, 
+                           origin[2], self.units)
+        text += '"UPos:=", Array("%f%s", "%f%s", "%f%s")),'%(dest[0], self.units,
+                                                             dest[1], self.units, 
+                                                             dest[2], self.units)
+        text +='"ReverseV:=",  _\n\
+%s)'%(str(self.reverse_v).lower())
+        return text
+
+    def plot(self):
+        return 
+
+
+class Set_slave_boundary(Action):
+
+    def __init__(self, name, master_name, face, direction, units='mm', reverse_v=False,
+                 phi=0, theta=0, ang_units='deg'):
+        super().__init__()
+        self.name = name
+        self.master_name = master_name
+        self.face = face
+        self.direction = direction
+        self.units = units
+        self.reverse_v = reverse_v  ##I think if the master is true, this should be false..
+        self.phi = phi      #
+        self.theta = theta
+        self.ang_units = ang_units
+        
+
+    def hfss_implementation(self):
+        origin = self.direction[0]
+        dest = self.direction[1]
+        text = '\nSet oModule = oDesign.GetModule("BoundarySetup")\n'
+        text += 'oModule.AssignSlave Array("NAME:%s",'%self.name
+        text += '"Faces:=", Array(%s),'%self.face
+        text += 'Array("NAME:CoordSysVector", "Origin:=", Array( _\n\
+  "%f%s", "%f%s", "%f%s"),'%(origin[0], self.units, origin[1], self.units,
+                             origin[2], self.units)
+        text += '"UPos:=", Array("%f%s", "%f%s", "%f%s")),'%(dest[0], self.units,
+                                                               dest[1], self.units,
+                                                               dest[2], self.units)
+        text += '"ReverseV:=",  _\n\
+  %s,'%(str(self.reverse_v).lower())
+        text += '"Master:=", "%s",'%self.master_name
+        text += '"UseScanAngles:=", true, "Phi:=", "%s",'%(self._hfss_value(self.phi, units=self.ang_units))
+        text += '"Theta:=", "%s")'%self._hfss_value(self.theta, self.ang_units)
+        return text
+
+    def plot(self):
+        return 
+
+
+
 
 
 ###
@@ -330,6 +479,104 @@ class Generate_report(Action):
 
     def hfss_implementation(self):
         return
+
+    def plot(self):
+        return 
+
+
+
+###
+### Get parameters...
+###
+
+
+
+class Get_box_faces(Action):
+    """
+    The faces of the box have have a generated ID.. so we need to get the parameters
+    somehow
+    """
+    def __init__(self, obj):
+        self.obj= obj
+        self.xmin = obj.position[0]
+        self.xmax = obj.position[0]+obj.sizes[0]
+        self.xcenter = obj.position[0]+obj.sizes[0]/2
+
+        self.ymin = obj.position[1]
+        self.ymax = obj.position[1]+obj.sizes[1]
+        self.ycenter = obj.position[1]+obj.sizes[1]/2
+
+        self.zmin = obj.position[2]
+        self.zmax = obj.position[2]+obj.sizes[2]
+        self.zcenter= obj.position[2]+obj.sizes[2]/2
+
+        self.face_xmin = "%s_Xmin"%obj.name
+        self.face_xmax = "%s_Xmax"%obj.name
+        self.face_ymin = "%s_Ymin"%obj.name
+        self.face_ymax = "%s_Ymax"%obj.name
+        self.face_zmin = "%s_Zmin"%obj.name
+        self.face_zmax = "%s_Zmax"%obj.name
+
+    def hfss_implementation(self):
+        prefix = self.obj.name
+        text = '\n%s_Xmin = oEditor.GetFaceByPosition(Array( _\n\
+    "NAME:FaceParameters", _\n\
+    "BodyName:=", "%s", _\n\
+    "XPosition:=", "%s", _\n\
+    "YPosition:=", "%s", _\n\
+    "ZPosition:=", "%s"))\n'%(self.obj.name, self.obj.name, 
+                              self.obj._hfss_value(self.xmin),
+                              self.obj._hfss_value(self.ycenter),
+                              self.obj._hfss_value(self.zcenter))
+        text += '%s_Xmax = oEditor.GetFaceByPosition(Array( _\n\
+    "NAME:FaceParameters", _\n\
+    "BodyName:=", "%s", _\n\
+    "XPosition:=", "%s", _\n\
+    "YPosition:=", "%s", _\n\
+    "ZPosition:=", "%s"))\n'%(self.obj.name, self.obj.name, 
+                              self.obj._hfss_value(self.xmax),
+                              self.obj._hfss_value(self.ycenter),
+                              self.obj._hfss_value(self.zcenter))
+
+        text += '\n%s_Ymin = oEditor.GetFaceByPosition(Array( _\n\
+    "NAME:FaceParameters", _\n\
+    "BodyName:=", "%s", _\n\
+    "XPosition:=", "%s", _\n\
+    "YPosition:=", "%s", _\n\
+    "ZPosition:=", "%s"))\n'%(self.obj.name, self.obj.name, 
+                              self.obj._hfss_value(self.xcenter),
+                              self.obj._hfss_value(self.ymin),
+                              self.obj._hfss_value(self.zcenter))
+        text += '%s_Ymax = oEditor.GetFaceByPosition(Array( _\n\
+    "NAME:FaceParameters", _\n\
+    "BodyName:=", "%s", _\n\
+    "XPosition:=", "%s", _\n\
+    "YPosition:=", "%s", _\n\
+    "ZPosition:=", "%s"))\n'%(self.obj.name, self.obj.name,
+                              self.obj._hfss_value(self.xcenter),
+                              self.obj._hfss_value(self.ymax),
+                              self.obj._hfss_value(self.zcenter))
+
+        text += '\n%s_Zmin = oEditor.GetFaceByPosition(Array( _\n\
+    "NAME:FaceParameters", _\n\
+    "BodyName:=", "%s", _\n\
+    "XPosition:=", "%s", _\n\
+    "YPosition:=", "%s", _\n\
+    "ZPosition:=", "%s"))\n'%(self.obj.name, self.obj.name,
+                              self.obj._hfss_value(self.xcenter),
+                              self.obj._hfss_value(self.ycenter),
+                              self.obj._hfss_value(self.zmin))
+        text += '%s_Zmax = oEditor.GetFaceByPosition(Array( _\n\
+    "NAME:FaceParameters", _\n\
+    "BodyName:=", "%s", _\n\
+    "XPosition:=", "%s", _\n\
+    "YPosition:=", "%s", _\n\
+    "ZPosition:=", "%s"))\n'%(self.obj.name, self.obj.name,
+                              self.obj._hfss_value(self.xcenter),
+                              self.obj._hfss_value(self.ycenter),
+                              self.obj._hfss_value(self.zmax))
+
+        return text
 
     def plot(self):
         return 
