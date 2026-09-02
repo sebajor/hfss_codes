@@ -14,6 +14,10 @@ from astropy import units as apu
 ### there are 2 line impedances in this design one is z0 and the other one z0/sqrt(2)
 ###
 
+###
+### TODO: make this again but with the polyline.. then should be more cleaner
+###
+
 freq = 2.4*apu.GHz
 wavel = (cte.c/freq)
 

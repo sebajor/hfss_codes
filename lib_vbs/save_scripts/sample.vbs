@@ -38,3 +38,17 @@ oDesign.ChangeProperty Array("NAME:AllTabs", Array("NAME:LocalVariableTab", Arra
 oEditor.ChangeProperty Array("NAME:AllTabs", Array("NAME:Geometry3DCmdTab", Array("NAME:PropServers",  _
   "Box1:CreateBox:1"), Array("NAME:ChangedProps", Array("NAME:Position", "X:=", "2mm", "Y:=",  _
   "0mm", "Z:=", "z_val"))))
+
+oEditor.CreateRegularPolygon Array("NAME:RegularPolygonParameters", "IsCovered:=",  _
+  true, "XCenter:=", "0.6mm", "YCenter:=", "-2.2mm", "ZCenter:=", "0mm", "XStart:=",  _
+  "0mm", "YStart:=", "-2mm", "ZStart:=", "0mm", "NumSides:=", "12", "WhichAxis:=",  _
+  "Z"), Array("NAME:Attributes", "Name:=", "Polygon1", "Flags:=", "", "Color:=",  _
+  "(132 132 193)", "Transparency:=", 0, "PartCoordinateSystem:=", "Global", "UDMId:=",  _
+  "", "MaterialValue:=", "" & Chr(34) & "vacuum" & Chr(34) & "", "SolveInside:=",  _
+  true)
+oEditor.CreateEllipse Array("NAME:EllipseParameters", "IsCovered:=", true, "XCenter:=",  _
+  "-1.8mm", "YCenter:=", "2mm", "ZCenter:=", "0mm", "MajRadius:=", "1mm", "Ratio:=",  _
+  "0.6", "WhichAxis:=", "Z", "NumSegments:=", "0"), Array("NAME:Attributes", "Name:=",  _
+  "Ellipse1", "Flags:=", "", "Color:=", "(132 132 193)", "Transparency:=", 0, "PartCoordinateSystem:=",  _
+  "Global", "UDMId:=", "", "MaterialValue:=", "" & Chr(34) & "vacuum" & Chr(34) & "", "SolveInside:=",  _
+  true)

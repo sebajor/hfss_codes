@@ -87,3 +87,48 @@ class Rectangle(Surface):
     def plot(self):
         return 
 
+
+
+class Circle(Surface):
+
+    def __init__(self, name, radius, 
+                 units='mm', position=[0,0,0],
+                 axis='Z', material='vacuum', color='lightblue',
+                 transparency=0
+                 ):
+        super().__init__(name, material, color, units, axis, 
+                         transparency=transparency) 
+        self.radius = radius
+        self.set_position(offset_x=position[0], offset_y=position[1], 
+                          offset_z=position[2])
+    
+    def hfss_implementation(self):
+        text = '\noEditor.CreateCircle Array("NAME:CircleParameters", "IsCovered:=", true,'
+        text += '"XCenter:=",  _\n\
+"%s",'%(self._hfss_value(self.position[0]))
+        text += '"YCenter:=", "%s",'%(self._hfss_value(self.position[1]))
+        text +='"ZCenter:=", "%s",'%self._hfss_value(self.position[2])
+        text += '"Radius:=",  _\n\
+"%s",'%self._hfss_value(self.radius)
+        text += '"WhichAxis:=", "%s",'%(str(self.axis).upper())
+        text += '"NumSegments:=", "0"), Array("NAME:Attributes", '
+        text += '"Name:=",  _\n\
+"%s",'%self.name
+        text += '"Flags:=", "", '
+        color = ImageColor.getrgb(self.color)
+        text += '"Color:=", "(%i %i %i)",'%(color[0], color[1], color[2])
+        text += '"Transparency:=", %i,'%self.transparency
+        text += '"PartCoordinateSystem:=",  _\n\
+"Global", "UDMId:=", "",'
+        text += '"MaterialValue:=", "" & Chr(34) & "%s" & Chr(34) & "",'%self.material
+        text += '"SolveInside:=",true)'
+        return text
+
+    def plot(self):
+        return 
+
+
+
+
+
+

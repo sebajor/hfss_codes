@@ -104,6 +104,41 @@ class Substract_objects(Action):
         return 
 
 
+##
+class Duplicate_object_around_axis(Action):
+
+    def __init__(self, obj, new_name,  angle, units='deg', axis='Z'):
+        super().__init__()
+        self.obj_name = obj.name
+        self.angle = angle
+        self.units = units
+        self.axis = axis
+        self.name = new_name
+        ###TODO: this class should return the rotated object! Hfss is shit and dont 
+        ##give the actual coordinates.. but I can get them with euler matrices..
+
+    def hfss_implementation(self):
+        text = '\noEditor.DuplicateAroundAxis Array("NAME:Selections", "Selections:=", "%s",'%self.obj_name
+        text += '"NewPartsModelFlag:=",  _\n\
+"Model"), Array("NAME:DuplicateAroundAxisParameters", "CreateNewObjects:=", true,'
+        text += '"WhichAxis:=",  _\n\
+"%s",'%(str(self.axis).upper())
+        text += '"AngleStr:=", "%s",'%self._hfss_value(self.angle)
+        text += '"NumClones:=", "2"), Array("NAME:Options", "DuplicateAssignments:=",  false)\n'
+        ##the copy should be obj_name+"_1"
+        text += 'oEditor.ChangeProperty Array("NAME:AllTabs", Array("NAME:Geometry3DAttributeTab",'
+        text += 'Array("NAME:PropServers",  _\n\
+"%s_1"),'%self.obj_name
+        text += 'Array("NAME:ChangedProps", Array("NAME:Name", "Value:=", "%s"))))'%self.name
+        return text
+
+    def plot(self):
+        return 
+
+
+
+
+
 class Connect_objects(Action):
     """
     Note: the resulting objname is the one of obj1
@@ -222,6 +257,19 @@ false, "UseAdaptiveIE:=", false, "IncludeInPostproc:=", true)\n'%self.obj_name
     def plot(self):
         return None
 
+class Set_PEC(Action):
+    def __init__(self, obj, bound_name):
+        self.obj_name = obj.name
+        self.bound_name = bound_name
+
+    def hfss_implementation(self):
+        text = '\nSet oModule = oDesign.GetModule("BoundarySetup")\n'
+        text += 'oModule.AssignPerfectE Array("NAME:%s", "Objects:=", Array("%s"), "InfGroundPlane:=",  _\n\
+false)\n'%(self.bound_name, self.obj_name)
+        return text
+    
+    def plot(self):
+        return 
 
 
 class Set_lumped_port(Action):
@@ -268,13 +316,15 @@ class Set_floquet_port(Action):
     """
     Im lazy... just going to support 2 modes
     mode_vector is a 2 element list with the orig, dest vector
+    affects_refinament: if the modes are used for the meshing of the solution..
+                        at least one floquet port must have this as true
     """
-
     def __init__(self, name, face, 
                  mode_x_vector, mode_y_vector,
                  units = 'mm',
                  scan_phi=0, scan_theta=0,
-                 scan_units='deg'
+                 scan_units='deg',
+                 refinement=True
                  ):
         super().__init__()
         self.name = name
@@ -285,6 +335,7 @@ class Set_floquet_port(Action):
         self.mode_x_vector = mode_x_vector
         self.mode_y_vector = mode_y_vector
         self.scan_units = "deg"
+        self.refinement = refinement
 
     def hfss_implementation(self):
         modex_orig = self.mode_x_vector[0]
@@ -320,9 +371,11 @@ class Set_floquet_port(Action):
         
         text +=  'Array("NAME:ModesList", Array("NAME:Mode", "ModeNumber:=",  _\n\
   1, "IndexM:=", 0, "IndexN:=", 0, "KC2:=", 0, "PropagationState:=", "Propagating", "Attenuation:=",  _\n\
-  0, "PolarizationState:=", "TE", "AffectsRefinement:=", false), Array("NAME:Mode", "ModeNumber:=",  _\n\
+  0, "PolarizationState:=", "TE", "AffectsRefinement:=", %s), Array("NAME:Mode", "ModeNumber:=",  _\n\
   2, "IndexM:=", 0, "IndexN:=", 0, "KC2:=", 0, "PropagationState:=", "Propagating", "Attenuation:=",  _\n\
-  0, "PolarizationState:=", "TM", "AffectsRefinement:=", false)))\n'
+  0, "PolarizationState:=", "TM", "AffectsRefinement:=", %s)))\n'%(str(self.refinement).lower(),
+                                                                      str(self.refinement).lower())
+
         return text
 
     def plot(self):
