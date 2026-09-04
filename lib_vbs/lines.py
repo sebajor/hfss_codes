@@ -10,6 +10,8 @@ class Lines(ABC):
                  material=None, color=None,):
         self.name = name
         self.units = units
+        if(material is not None):
+            self.material = material
 
     @abstractmethod
     def hfss_implementation(self):
@@ -28,6 +30,12 @@ class Lines(ABC):
             units = self.units
 
         return f"{value}{units}"
+
+    def _cst_value(self, value):
+        if isinstance(value, Expression):
+            return value.name
+
+        return f"{value}"
 
 
 ###
@@ -132,4 +140,34 @@ class Polycurve_plane(Lines):
     def plot(self):
         plot_points = self._get_plot_values()
         plt.plot(plot_points[:,0], plot_points[:,1], '*-')
+
+    
+    def cst_implementation(self):
+        curve_name = self.name
+        if(self.closed):
+            curve_name = "%s_curve"%self.name
+        text = '\nWith Polygon\n'
+        text += '\t.Reset\n'
+        text += '\t.Name "%s"\n'%curve_name
+        text += '\t.Curve "curve1"\n'
+        text += '\t.Point "%s", "%s"\n'%(self._cst_value(self.points[0][0]),
+                                         self._cst_value(self.points[0][1]))
+        for i in range(1, len(self.points)):
+            text += '\t.LineTo "%s", "%s"\n'%(self._cst_value(self.points[i][0]),
+                                              self._cst_value(self.points[i][1]))
+        text += '\t.Create\n'
+        text += 'End With\n'
+        if(self.closed):
+            text += 'With CoverCurve\n'
+            text += '\t.Reset\n'
+            text += '\t.Name "%s"\n'%self.name
+            text += '\t.Component "component1"\n'
+            text += '\t.Material "%s"\n'%self.material
+            text += '\t.Curve "curve1:%s"\n'%curve_name
+            text += '\t.DeleteCurve "True"\n'
+            text += '\t.Create\n'
+            text += 'End With\n'
+        return text
+
+
 

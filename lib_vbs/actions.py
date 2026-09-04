@@ -28,6 +28,11 @@ class Action(ABC):
             units = self.units
 
         return f"{value}{units}"
+    
+    def _cst_value(sefl, value):
+        if isinstance(value, Expression):
+            return value.name
+        return f"{value}"
 
 
 class Rotate_object(Action):
@@ -75,6 +80,7 @@ class Unite_objects(Action):
     def __init__(self, obj1, obj2):
         self.obj1_name = obj1.name
         self.obj2_name = obj2.name 
+        ##check if the obj is volume, surface, etc
 
     def hfss_implementation(self):
         text = '\noEditor.Unite Array("NAME:Selections", "Selections:=", "%s,%s"),\
@@ -85,8 +91,12 @@ false)\n'%(self.obj1_name, self.obj2_name)
     def plot(self):
         return 
 
+    def cst_implementation(self):
+        text = '\nSolid.Add "component1:%s", "component1:%s"\n'%(self.obj1_name, self.obj2_name)
+        return text
 
-class Substract_objects(Action):
+
+class Subtract_objects(Action):
     """
     Obj2 is substracted from obj1, and the ouptut name is the one of obj1
     """
@@ -102,6 +112,11 @@ class Substract_objects(Action):
 
     def plot(self):
         return 
+
+    def cst_implementation(self):
+        ##NOTE: maybe here it will depend if its solid, 2d etc.
+        text = '\nSolid.Subtract "component1:%s", "component1:%s"\n'%(self.obj1_name, self.obj2_name)
+        return text
 
 
 ##
@@ -186,11 +201,17 @@ class Generate_revolution_solid(Action):
 
 
 class Extrude_surface(Action):
-    def __init__(self, obj, thickness, units='mm'):
+    def __init__(self, obj, thickness, units='mm', pick_point=None):
         super().__init__()
+        #self.obj = obj
         self.obj_name = obj.name
         self.thick = thickness
         self.units = units
+        self.pick_point = pick_point
+        if(hasattr(obj, "material")):
+            self.material = obj.material
+        else:
+            self.material = "PEC"
 
     def hfss_implementation(self):
         text = '\noEditor.ThickenSheet Array("NAME:Selections", "Selections:=", "%s",'%self.obj_name
@@ -201,6 +222,38 @@ false)\n'%self._hfss_value(self.thick)
 
     def plot(self):
         return
+
+    def cst_implementation(self):
+        """
+        Here we need to select a face
+        """
+        face_point = self.pick_point
+        if(face_point is None):
+            raise ValueError("CST needs a point in the face to extrude")
+
+        text = '\nPick.ClearAllPicks\n'
+        text += '\nPick.PickFaceFromPoint "component1:%s", "%s", "%s", "%s"\n'%(
+                    self.obj_name,
+                    self._cst_value(face_point[0]),
+                    self._cst_value(face_point[1]),
+                    self._cst_value(face_point[2])
+                )
+        text += 'With Extrude\n'
+        text += '\t.Reset\n'
+        text += '\t.Name "%s_tmp"\n'%self.obj_name
+        text += '\t.Component "component1"\n'
+        text += '\t.Material "%s"\n'%self.material
+        text += '\t.Mode "Picks"\n'
+        text += '\t.Height "%s"\n'%(self._cst_value(-self.thick))   #3I think CST is the opposite of HFSS in extrusion
+        text += '\t.DeleteBaseFaceSolid "True"\n'
+        text += '\t.ClearPickedFace "True"\n'
+        text += '\t.Create\n'
+        text += 'End With\n'
+
+        text += '\nSolid.Rename "component1:%s_tmp", "%s"\n'%(self.obj_name, self.obj_name)
+        return text
+
+
 
 ##Change objects parameters
 
@@ -221,6 +274,13 @@ class Change_object_color(Action):
     def plot(self):
         return 
 
+    def cst_implementation(self):
+        text = '\nSolid.SetUseIndividualColor "component1:%s", 1\n'%self.obj_name
+        text += 'Solid.ChangeIndividualColor "component1:%s", "%i", "%i", "%i"\n'%(
+                   self.obj_name, self.new_color[0], self.new_color[1],self.new_color[2])
+        return text
+
+
 
 class Change_object_material(Action):
     def __init__(self, obj, material):
@@ -235,6 +295,10 @@ class Change_object_material(Action):
 
     def plot(self):
         return 
+
+    def cst_implementation(self):
+        text = '\nSolid.ChangeMaterial "component1:%s", "%s"'%(self.obj_name, self.material)
+        return text
 
 
 ###

@@ -45,3 +45,25 @@ Set oEditor = oDesign.SetActiveEditor("3D Modeler")\n'%self.name
         for action in self.actions:
             text += action.hfss_implementation()
         return text
+
+
+class cst_vba_model():
+    def __init__(self, name):
+        self.name = name
+        self.actions = []
+
+    def add_action(self, action):
+        self.actions.append(action)
+
+    def plot(self):
+        return
+
+    def cst_implementation(self):
+        text = "Sub Main ()\n"
+        text += 'Component.New "component1"\n'
+        for action in self.actions:
+            text += action.cst_implementation()
+        text += '\nEnd Sub'
+        return text
+
+

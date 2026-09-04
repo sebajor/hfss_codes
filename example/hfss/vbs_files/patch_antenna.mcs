@@ -1,0 +1,123 @@
+Sub Main ()
+Component.New "component1"
+With Material
+	.Reset
+	.Name "FR-4 (lossy)"
+	.Folder ""
+	.FrqType "all"
+	.Type "Normal"
+	.SetMaterialUnit "GHz", "mm"
+	.Epsilon "4.3"
+	.Mu "1.0"
+	.Kappa "0.0"
+	.TanD "0.025"
+	.TanDFreq "10.0"
+	.TanDGiven "True"
+	.TanDModel "ConstTanD"
+	.KappaM "0.0"
+	.TanDM "0.0"
+	.TanDMFreq "0.0"
+	.TanDMGiven "False"
+	.TanDMModel "ConstKappa"
+	.DispModelEps "None"
+	.DispModelMu "None"
+	.DispersiveFittingSchemeEps "General 1st"
+	.DispersiveFittingSchemeMu "General 1st"
+	.UseGeneralDispersionEps "False"
+	.UseGeneralDispersionMu "False"
+	.Rho "0.0"
+	.ThermalType "Normal"
+	.ThermalConductivity "0.3"
+	.SetActiveMaterial "all"
+	.Colour "0.94", "0.82", "0.76"
+	.Wireframe "False"
+	.Transparency "0"
+	.Create
+End With
+
+StoreDoubleParameter("dielectric_height", 1.6)
+
+StoreDoubleParameter("dielectric_size", 60)
+
+StoreDoubleParameter("copper_height", 0.035)
+
+StoreDoubleParameter("patch_width", 30)
+
+StoreDoubleParameter("patch_length", 29.4)
+
+StoreDoubleParameter("feedline_width", 3)
+
+StoreDoubleParameter("feed_cut_y", 5)
+
+StoreDoubleParameter("feed_cut_x", 9.5)
+
+With Brick
+	.Reset
+	.Name "ground_plane"
+	.Component "component1"
+	.Material "PEC"
+	.Xrange "((-dielectric_size)/2)", "(((-dielectric_size)/2)+dielectric_size)"
+	.Yrange "((-dielectric_size)/2)", "(((-dielectric_size)/2)+dielectric_size)"
+	.Zrange "(-copper_height)", "((-copper_height)+copper_height)"
+	.Create
+End With
+Solid.SetUseIndividualColor "component1:ground_plane", 1
+Solid.ChangeIndividualColor "component1:ground_plane", "255", "165", "0"
+
+With Brick
+	.Reset
+	.Name "diel"
+	.Component "component1"
+	.Material "FR-4 (lossy)"
+	.Xrange "((-dielectric_size)/2)", "(((-dielectric_size)/2)+dielectric_size)"
+	.Yrange "((-dielectric_size)/2)", "(((-dielectric_size)/2)+dielectric_size)"
+	.Zrange "0", "(0+dielectric_height)"
+	.Create
+End With
+Solid.SetUseIndividualColor "component1:diel", 1
+Solid.ChangeIndividualColor "component1:diel", "70", "130", "180"
+
+With Brick
+	.Reset
+	.Name "patch"
+	.Component "component1"
+	.Material "PEC"
+	.Xrange "((-patch_width)/2)", "(((-patch_width)/2)+patch_width)"
+	.Yrange "((-patch_length)/2)", "(((-patch_length)/2)+patch_length)"
+	.Zrange "dielectric_height", "(dielectric_height+copper_height)"
+	.Create
+End With
+Solid.SetUseIndividualColor "component1:patch", 1
+Solid.ChangeIndividualColor "component1:patch", "255", "165", "0"
+
+With Brick
+	.Reset
+	.Name "feedline"
+	.Component "component1"
+	.Material "PEC"
+	.Xrange "(dielectric_size/2)", "((dielectric_size/2)+((-dielectric_size)/2))"
+	.Yrange "((-feedline_width)/2)", "(((-feedline_width)/2)+feedline_width)"
+	.Zrange "dielectric_height", "(dielectric_height+copper_height)"
+	.Create
+End With
+Solid.SetUseIndividualColor "component1:feedline", 1
+Solid.ChangeIndividualColor "component1:feedline", "255", "165", "0"
+
+With Brick
+	.Reset
+	.Name "feed_cut"
+	.Component "component1"
+	.Material "PEC"
+	.Xrange "(patch_width/2)", "((patch_width/2)+(-feed_cut_x))"
+	.Yrange "((-feed_cut_y)/2)", "(((-feed_cut_y)/2)+feed_cut_y)"
+	.Zrange "dielectric_height", "(dielectric_height+copper_height)"
+	.Create
+End With
+Solid.SetUseIndividualColor "component1:feed_cut", 1
+Solid.ChangeIndividualColor "component1:feed_cut", "255", "0", "0"
+
+Solid.Substract "component1:patch", "component1:feed_cut"
+
+Solid.Add "component1:patch", "component1:feedline"
+
+ End Sub

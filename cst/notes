@@ -1,0 +1,55 @@
+
+Shortcuts:
+2,3,4,5,6 --> these are different views
+return normal view      space
+
+
+rename shape            F2
+shape properties        ctrl+e
+hide shape              ctr+h
+show all shape          ctrl+u
+reset view              space
+bend shape              ctrl+b
+remove feature          ctrl+r
+add shape               +
+substract shape         -
+intersect shape         *
+insert                  /
+imprint                 %
+transform               ctrl+t
+exit                    esc
+
+ctrl                    rotate
+shift                   plane rotation
+shift+ctrl              pan
+
+pick whatever           s
+pick edge               e
+pick face               f
+
+clear picks             d
+
+pick edge end point     p
+pick edge mid point     m
+pick circle center      c
+pick point on circle    r
+pick face center        a
+pick edge               e
+
+
+
+###############################################################################
+
+After doing the geometrical design, it uses the time domain solver (home-> setup solver)
+In microstrips they use the waveguide port. 
+If you select the surface that you want to excite, you can go to
+home->vba macros -> solver->ports-> calculate port extension
+you got a tool that helps you to compute the size of the waveguide port
+
+In simulation frequency you set the target freq range, idem you can set the 
+boundary conditions and the background.
+
+If you want to capture some values you have to add monitors (for example the surface current
+or the farfield)
+Finally you can modify the setup of the solver there too.
+

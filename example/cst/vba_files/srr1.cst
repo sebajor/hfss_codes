@@ -1,0 +1,154 @@
+Sub Main ()
+Component.New "component1"
+With Material
+	.Reset
+	.Name "FR-4 (lossy)"
+	.Folder ""
+	.FrqType "all"
+	.Type "Normal"
+	.SetMaterialUnit "GHz", "mm"
+	.Epsilon "4.3"
+	.Mu "1.0"
+	.Kappa "0.0"
+	.TanD "0.025"
+	.TanDFreq "10.0"
+	.TanDGiven "True"
+	.TanDModel "ConstTanD"
+	.KappaM "0.0"
+	.TanDM "0.0"
+	.TanDMFreq "0.0"
+	.TanDMGiven "False"
+	.TanDMModel "ConstKappa"
+	.DispModelEps "None"
+	.DispModelMu "None"
+	.DispersiveFittingSchemeEps "General 1st"
+	.DispersiveFittingSchemeMu "General 1st"
+	.UseGeneralDispersionEps "False"
+	.UseGeneralDispersionMu "False"
+	.Rho "0.0"
+	.ThermalType "Normal"
+	.ThermalConductivity "0.3"
+	.SetActiveMaterial "all"
+	.Colour "0.94", "0.82", "0.76"
+	.Wireframe "False"
+	.Transparency "0"
+	.Create
+End With
+
+StoreDoubleParameter("srr_len", 40)
+
+StoreDoubleParameter("srr_width", 48)
+
+StoreDoubleParameter("line_width", 4)
+
+StoreDoubleParameter("c_line_width", 4)
+
+StoreDoubleParameter("c_plate_len", 18)
+
+StoreDoubleParameter("c_plate_width", 4)
+
+StoreDoubleParameter("c_gap", 2)
+
+StoreDoubleParameter("copper_height", 0.035)
+
+StoreDoubleParameter("dielectric_size", 64)
+
+StoreDoubleParameter("dielectric_height", 1.6)
+
+StoreDoubleParameter("rad_thumbs_rule", 74.9481145)
+
+With Polygon
+	.Reset
+	.Name "srr_interior_curve"
+	.Curve "curve1"
+	.Point "(((-srr_width)/2)+line_width)", "(((-srr_len)/2)+line_width)"
+	.LineTo "(((-srr_width)/2)+line_width)", "((srr_len/2)-line_width)"
+	.LineTo "((-c_line_width)/2)", "((srr_len/2)-line_width)"
+	.LineTo "((-c_line_width)/2)", "((c_gap/2)+c_plate_width)"
+	.LineTo "((-c_plate_len)/2)", "((c_gap/2)+c_plate_width)"
+	.LineTo "((-c_plate_len)/2)", "(c_gap/2)"
+	.LineTo "(c_plate_len/2)", "(c_gap/2)"
+	.LineTo "(c_plate_len/2)", "((c_gap/2)+c_plate_width)"
+	.LineTo "(c_plate_width/2)", "((c_gap/2)+c_plate_width)"
+	.LineTo "(c_plate_width/2)", "((srr_len/2)-line_width)"
+	.LineTo "((srr_width/2)-line_width)", "((srr_len/2)-line_width)"
+	.LineTo "((srr_width/2)-line_width)", "(((-srr_len)/2)+line_width)"
+	.LineTo "(c_line_width/2)", "(((-srr_len)/2)+line_width)"
+	.LineTo "(c_line_width/2)", "(((-c_gap)/2)-c_plate_width)"
+	.LineTo "(c_plate_len/2)", "(((-c_gap)/2)-c_plate_width)"
+	.LineTo "(c_plate_len/2)", "((-c_gap)/2)"
+	.LineTo "((-c_plate_len)/2)", "((-c_gap)/2)"
+	.LineTo "((-c_plate_len)/2)", "(((-c_gap)/2)-c_plate_width)"
+	.LineTo "((-c_line_width)/2)", "(((-c_gap)/2)-c_plate_width)"
+	.LineTo "((-c_line_width)/2)", "(((-srr_len)/2)+line_width)"
+	.LineTo "(((-srr_width)/2)+line_width)", "(((-srr_len)/2)+line_width)"
+	.Create
+End With
+With CoverCurve
+	.Reset
+	.Name "srr_interior"
+	.Component "component1"
+	.Material "PEC"
+	.Curve "curve1:srr_interior_curve"
+	.DeleteCurve "True"
+	.Create
+End With
+
+With Polygon
+	.Reset
+	.Name "srr_closed_curve"
+	.Curve "curve1"
+	.Point "((-srr_width)/2)", "((-srr_len)/2)"
+	.LineTo "((-srr_width)/2)", "(srr_len/2)"
+	.LineTo "(srr_width/2)", "(srr_len/2)"
+	.LineTo "(srr_width/2)", "((-srr_len)/2)"
+	.LineTo "((-srr_width)/2)", "((-srr_len)/2)"
+	.Create
+End With
+With CoverCurve
+	.Reset
+	.Name "srr_closed"
+	.Component "component1"
+	.Material "PEC"
+	.Curve "curve1:srr_closed_curve"
+	.DeleteCurve "True"
+	.Create
+End With
+
+Solid.Subtract "component1:srr_closed", "component1:srr_interior"
+
+Pick.ClearAllPicks
+
+Pick.PickFaceFromPoint "component1:srr_closed", "(((-srr_width)/2)+(line_width/2))", "0", "0"
+With Extrude
+	.Reset
+	.Name "srr_closed_tmp"
+	.Component "component1"
+	.Material "PEC"
+	.Mode "Picks"
+	.Height "copper_height"
+	.DeleteBaseFaceSolid "True"
+	.ClearPickedFace "True"
+	.Create
+End With
+
+Solid.Rename "component1:srr_closed_tmp", "srr_closed"
+
+Solid.SetUseIndividualColor "component1:srr_closed", 1
+Solid.ChangeIndividualColor "component1:srr_closed", "255", "165", "0"
+
+Solid.ChangeMaterial "component1:srr_closed", "PEC"
+With Brick
+	.Reset
+	.Name "substrate"
+	.Component "component1"
+	.Material "FR-4 (lossy)"
+	.Xrange "((-dielectric_size)/2)", "(((-dielectric_size)/2)+dielectric_size)"
+	.Yrange "((-dielectric_size)/2)", "(((-dielectric_size)/2)+dielectric_size)"
+	.Zrange "(-dielectric_height)", "((-dielectric_height)+dielectric_height)"
+	.Create
+End With
+Solid.SetUseIndividualColor "component1:substrate", 1
+Solid.ChangeIndividualColor "component1:substrate", "0", "128", "0"
+
+End Sub

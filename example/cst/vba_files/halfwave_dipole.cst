@@ -1,0 +1,44 @@
+Sub Main ()
+Component.New "component1"
+
+StoreDoubleParameter("dipole_height", 62.45676208333333)
+
+StoreDoubleParameter("dipole_gap", 1.2491352416666666)
+
+StoreDoubleParameter("wire_radius", 1.2491352416666666)
+
+With Cylinder
+	.Reset
+	.Name "upper_wire"
+	.Component "component1"
+	.Material "PEC"
+	.OuterRadius "wire_radius"
+	.InnerRadius "0.0"
+	.Axis "z"
+	.Zrange "(dipole_gap/2)", "((dipole_gap/2)+((dipole_height/2)-(dipole_gap/2)))"
+	.Xcenter "0"
+	.Ycenter "0"
+	.Segments "0"
+	.Create
+End With
+Solid.SetUseIndividualColor "component1:upper_wire", 1
+Solid.ChangeIndividualColor "component1:upper_wire", "70", "130", "180"
+
+With Cylinder
+	.Reset
+	.Name "bottom_wire"
+	.Component "component1"
+	.Material "PEC"
+	.OuterRadius "wire_radius"
+	.InnerRadius "0.0"
+	.Axis "z"
+	.Zrange "((-dipole_gap)/2)", "(((-dipole_gap)/2)+(((-dipole_height)/2)+(dipole_gap/2)))"
+	.Xcenter "0"
+	.Ycenter "0"
+	.Segments "0"
+	.Create
+End With
+Solid.SetUseIndividualColor "component1:bottom_wire", 1
+Solid.ChangeIndividualColor "component1:bottom_wire", "70", "130", "180"
+
+End Sub

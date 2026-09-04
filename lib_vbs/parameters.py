@@ -251,3 +251,9 @@ class Add_model_parameter(ModelParameter):
 
     def plot(self):
         return
+
+    def cst_implementation(self):
+        text = '\nStoreDoubleParameter("%s", %s)\n'%(self.name, self.value)
+        return text
+
+

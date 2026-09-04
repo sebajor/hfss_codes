@@ -24,11 +24,11 @@ class Surface(ABC):
         self.position[2]= offset_z
 
     @abstractmethod
-    def hfss_implementation(self, model_params):
+    def hfss_implementation(self):
         raise NotImplementedError
 
     @abstractmethod
-    def plot(self, model_params):
+    def plot(self):
         raise NotImplementedError
 
     def _hfss_value(self, value, units=None):
@@ -41,7 +41,14 @@ class Surface(ABC):
             units = self.units
 
         return f"{value}{units}"
-    
+
+    def _cst_value(self, value):
+        if isinstance(value, Expression):
+            return value.name
+
+        return f"{value}"
+
+
 ###
 ### Children
 ###
@@ -87,6 +94,33 @@ class Rectangle(Surface):
     def plot(self):
         return 
 
+    def cst_implementation(self):
+        text = '\nWith Rectangle\n'
+        text += '\t.Reset\n'
+        text += '\t.Name "%s"\n'%(self.name+"_curve")
+        text += '\t.Curve "curve1"\n'
+        ##mm here I think it might be some compatibilities issues when drawing..
+        ##cst just let me draw in Z plane, so if I want to draw in other plane 
+        ## I would need to rotate this..
+        text += '\t.Xrange "%s", "%s"\n'%(self._cst_value(self.position[0]), 
+                                      self._cst_value(self.position[0]+self.width))
+        text += '\t.Yrange "%s", "%s"\n'%(self._cst_value(self.position[1]),
+                                          self._cst_value(self.position[1]+self.height))
+        text += '\t.Create\n'
+        text += 'End With\n'
+
+        ##we will cover it
+        text += 'With CoverCurve\n'
+        text += '\t.Reset\n'
+        text += '\t.Name "%s"\n'%self.name
+        text += '\t.Component "component1"\n'
+        text += '\t.Material "%s"\n'%self.material
+        text += '\t.Curve "curve1:%s"\n'%(self.name+"_curve")
+        text += '\t.DeleteCurve "True"\n'
+        text += '\t.Create\n'
+        text += 'End With\n'
+
+        return text
 
 
 class Circle(Surface):

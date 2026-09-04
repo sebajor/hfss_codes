@@ -39,6 +39,12 @@ class Volume(ABC):
             units = self.units
 
         return f"{value}{units}"
+    
+    def _cst_value(sefl, value):
+        if isinstance(value, Expression):
+            return value.name
+        return f"{value}"
+
 
     @abstractmethod
     def hfss_implementation(self):
@@ -91,6 +97,33 @@ class Cylinder(Volume):
     def plot(self):
         return 
 
+    def cst_implementation(self):
+        text = '\nWith Cylinder\n\
+\t.Reset\n\
+\t.Name "%s"\n'%self.name
+        text +='\t.Component "component1"\n'     ##no idea.. just let it
+        text +='\t.Material "%s"\n'%self.material   ##be carefull here..
+        text +='\t.OuterRadius "%s"\n'%self._cst_value(self.radius)
+        text +='\t.InnerRadius "0.0"\n'
+        text +='\t.Axis "%s"\n'%(str(self.axis).lower())
+        ###Here I really believe that the names here will change depending on the 
+        ##axis..
+        text += '\t.Zrange "%s", "%s"\n'%(self._cst_value(self.position[2]), 
+                                      self._cst_value(self.position[2]+self.height))
+        text += '\t.Xcenter "%s"\n'%self._cst_value(self.position[0])
+        text += '\t.Ycenter "%s"\n'%self._cst_value(self.position[1])
+        text += '\t.Segments "0"\n'
+        text += '\t.Create\n\
+End With\n'
+        ##set the color
+        color = ImageColor.getrgb(self.color)
+        text += 'Solid.SetUseIndividualColor "component1:%s", 1\n'%self.name
+        text += 'Solid.ChangeIndividualColor "component1:%s", "%i", "%i", "%i"\n'%(self.name,
+                                                                                  color[0],
+                                                                                  color[1],
+                                                                                  color[2])
+        return text
+
 
 
 
@@ -127,6 +160,32 @@ class Box(Volume):
     
     def plot(self):
         return 
+
+    def cst_implementation(self):
+        text ='\nWith Brick\n\
+\t.Reset\n'
+        text += '\t.Name "%s"\n'%self.name
+        text += '\t.Component "component1"\n'
+        text += '\t.Material "%s"\n'%self.material
+        text += '\t.Xrange "%s", "%s"\n'%(self._cst_value(self.position[0]),
+                    self._cst_value(self.position[0]+self.sizes[0]))
+        text += '\t.Yrange "%s", "%s"\n'%(self._cst_value(self.position[1]),
+                    self._cst_value(self.position[1]+self.sizes[1]))
+        text += '\t.Zrange "%s", "%s"\n'%(self._cst_value(self.position[2]),
+                    self._cst_value(self.position[2]+self.sizes[2]))
+        text +='\t.Create\n\
+End With\n'
+        ##set the color
+        color = ImageColor.getrgb(self.color)
+        text += 'Solid.SetUseIndividualColor "component1:%s", 1\n'%self.name
+        text += 'Solid.ChangeIndividualColor "component1:%s", "%i", "%i", "%i"\n'%(self.name,
+                                                                                  color[0],
+                                                                                  color[1],
+                                                                                  color[2])
+        return text
+
+
+
 
 
 
